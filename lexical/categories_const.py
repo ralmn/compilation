@@ -103,4 +103,12 @@ ALL_TOKENS = [
     TOKEN_VALUE
 ]
 
+TOKEN_MULTI_CHARS = [
+    TOKEN_AFFECT, # ->  ==
+    TOKEN_NOT, # -> !=
+    TOKEN_LOWER_THAN, # -> <=
+    TOKEN_GREATER_THAN, # -> >=
+    TOKEN_POINTER_ADRESS # -> &&
+]
+
 MAP_TOKENS = {cat.symbol: cat for cat in ALL_TOKENS}
