@@ -15,14 +15,18 @@ def tokenize(input_str):
     while charIndex < nbChar:
         c = input_str[charIndex]
 
-        if str.isspace(c):
+        if ord(c) == 13:  # 13 = \r
+            column = 1
             charIndex += 1
-            column += 1
             continue
-        elif c is "\n" or c is "\r\n":
+        elif ord(c) == 10:  # 10 = '\n'
             line += 1
             column = 1
             charIndex += 1
+            continue
+        elif str.isspace(c):
+            charIndex += 1
+            column += 1
             continue
 
         if str.isalpha(c):
@@ -39,7 +43,9 @@ def tokenize(input_str):
                 tokens.append(
                     lexical.Token(lexical.categories_const.TOKEN_IDENT, line, column, identifier=currentSymbol))
 
+            column += (charIndexEnd - charIndex)
             charIndex = charIndexEnd
+            continue
         elif str.isdigit(c):
             charIndexEnd = charIndex
 
@@ -49,7 +55,9 @@ def tokenize(input_str):
             currentSymbol = input_str[charIndex:charIndexEnd]
             tokens.append(lexical.Token(lexical.categories_const.TOKEN_VALUE, line, column, value=currentSymbol))
 
+            column += (charIndexEnd - charIndex)
             charIndex = charIndexEnd
+            continue
         else:
 
             if c in lexical.categories_const.MAP_TOKENS:
