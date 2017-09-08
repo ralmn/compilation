@@ -1,8 +1,12 @@
 import unittest
 
-import lexical
+import test_lexical
+import test_table_symbol
 
 if __name__ == '__main__':
     suite = unittest.TestSuite()
-    suite.addTest(lexical.TestTokenizer("test_tokenizer"))
-    unittest.TextTestRunner.run(suite)
+    result = unittest.TestResult()
+    suite.addTests(unittest.TestLoader().loadTestsFromTestCase(test_lexical.TestTokenizer))
+    suite.addTests(unittest.TestLoader().loadTestsFromTestCase(test_table_symbol.TestTableSymbol))
+    runner = unittest.TextTestRunner()
+    print(runner.run(suite))
