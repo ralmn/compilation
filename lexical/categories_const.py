@@ -59,6 +59,7 @@ TOKEN_POINTER_VALUE = Category("pointer value", "@")
 
 # Other
 TOKEN_SEMICOLON = Category("semicolon", ";")
+TOKEN_COMMA = Category("comma", ",")
 TOKEN_AFFECT = Category("affectation", "=")
 TOKEN_IDENT = Category("identifiant", "^[a-zA-Z][a-zA-Z0-9]*")
 TOKEN_VALUE = Category("value", "[0-9]+")
@@ -98,6 +99,7 @@ ALL_TOKENS = [
     TOKEN_POINTER_ADRESS,
     TOKEN_POINTER_VALUE,
     TOKEN_SEMICOLON,
+    TOKEN_COMMA,
     TOKEN_AFFECT,
     TOKEN_IDENT,
     TOKEN_VALUE
