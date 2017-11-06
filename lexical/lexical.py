@@ -7,6 +7,8 @@ class Lexical:
         self.index = 0
 
     def current(self):
+        if self.index >= len(self.tokens):
+           return None
         return self.tokens[self.index]
 
     def nextToken(self):
