@@ -1,12 +1,15 @@
+import tokenizer
+
+
 class Lexical:
-    def __init__(self, tokens=[]):
-        self.tokens = tokens
+    def __init__(self, input_str):
+        self.tokens = tokenizer.tokenize(input_str)
         self.index = 0
 
     def current(self):
         return self.tokens[self.index]
 
-    def next(self):
+    def nextToken(self):
         self.index += 1
         return self.current()
 
@@ -16,3 +19,6 @@ class Lexical:
         else:
             self.index -= 1
         return self.current()
+
+    def __len__(self):
+        return len(self.tokens)

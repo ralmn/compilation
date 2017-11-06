@@ -1,4 +1,5 @@
-import lexical
+import categories_const
+from token import Token
 
 
 def tokenize(input_str):
@@ -37,11 +38,11 @@ def tokenize(input_str):
 
             currentSymbol = input_str[charIndex:charIndexEnd]
 
-            if currentSymbol in lexical.categories_const.MAP_TOKENS:
-                tokens.append(lexical.Token(lexical.categories_const.MAP_TOKENS[currentSymbol], line, column))
+            if currentSymbol in categories_const.MAP_TOKENS:
+                tokens.append(Token(categories_const.MAP_TOKENS[currentSymbol], line, column))
             else:
                 tokens.append(
-                    lexical.Token(lexical.categories_const.TOKEN_IDENT, line, column, identifier=currentSymbol))
+                    Token(categories_const.TOKEN_IDENT, line, column, identifier=currentSymbol))
 
             column += (charIndexEnd - charIndex)
             charIndex = charIndexEnd
@@ -53,19 +54,19 @@ def tokenize(input_str):
                 charIndexEnd += 1
 
             currentSymbol = input_str[charIndex:charIndexEnd]
-            tokens.append(lexical.Token(lexical.categories_const.TOKEN_VALUE, line, column, value=currentSymbol))
+            tokens.append(Token(categories_const.TOKEN_VALUE, line, column, value=int(currentSymbol)))
 
             column += (charIndexEnd - charIndex)
             charIndex = charIndexEnd
             continue
         else:
 
-            if c in lexical.categories_const.MAP_TOKENS:
-                category = lexical.categories_const.MAP_TOKENS[c]
-                if category in lexical.categories_const.TOKEN_MULTI_CHARS:
+            if c in categories_const.MAP_TOKENS:
+                category = categories_const.MAP_TOKENS[c]
+                if category in categories_const.TOKEN_MULTI_CHARS:
                     pass
                 else:
-                    tokens.append(lexical.Token(category, line, column) )
+                    tokens.append(Token(category, line, column) )
 
 
         charIndex += 1

@@ -13,7 +13,7 @@ class TestTokenizer(unittest.TestCase):
     def test_value(self):
         tokens = lexical.tokenizer.tokenize("2489")
         self.assertEqual(1, len(tokens))
-        self.assertEqual([lexical.Token(lexical.categories_const.TOKEN_VALUE, 1, 1, value="2489")], tokens)
+        self.assertEqual([lexical.Token(lexical.categories_const.TOKEN_VALUE, 1, 1, value=2489)], tokens)
 
     def test_if(self):
         tokens = lexical.tokenizer.tokenize("if")
