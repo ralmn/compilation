@@ -1,17 +1,30 @@
+# coding=utf-8
 from lexical import categories_const
 from node import Node
 import nodes_const
+from syntax_error import SyntaxError
 
+# P = constant | identifiant | ( T ) | - P
+
+# F = P * F | P / F | P % F | P
+
+# T = F + T | F - T | F
 
 class Syntax:
 
-    def __init__(self, lexical):
+    def __init__(self, lexical, run=True):
         self.size = 0
         self.lexical = lexical
         self.node = None
+        if run:
+            self.run()
 
     def run(self):
         self.node = self.T(self.lexical.current())
+
+        if not self.lexical.isEnd():
+            raise SyntaxError("Unexpected token %s" % str(self.lexical.nextToken()))
+
 
     def P(self, token):
         if token.category == categories_const.TOKEN_VALUE:
@@ -25,8 +38,7 @@ class Syntax:
             node = self.P(self.lexical.nextToken())
 
             if node is None:
-                print('NEGATIVE : 2nd part missing, (token: %s)' % str(token))
-                return None
+                raise SyntaxError('NEGATIVE : 2nd part missing, (token: %s)' % str(token))
 
             self.size += 1
             return Node(nodes_const.NODE_UNITARY_MINUS, [node])
@@ -50,23 +62,45 @@ class Syntax:
             return node1
 
         if token.category == categories_const.TOKEN_MULTIPLICATION:
-            node2 = self.F(self.lexical.nextToken())
+            next_token = self.lexical.nextToken()
+
+            if next_token is None:
+                raise SyntaxError('MULT : 2nd part missing, (token: %s)' % str(token))
+
+            node2 = self.F(next_token)
 
             if node2 is None:
-                print('MULT : 2nd part missing, (token: %s)' % str(token))
-                return None
+                raise SyntaxError('MULT : wrong 2nd part, (token: %s, next_token: %s)' % (str(token), str(next_token)))
 
             self.size += 1
             return Node(nodes_const.NODE_MULT, [node1, node2])
         elif token.category == categories_const.TOKEN_DIVIDER:
-            node2 = self.F(self.lexical.nextToken())
+            next_token = self.lexical.nextToken()
+
+            if next_token is None:
+                raise SyntaxError('DIV : 2nd part missing, (token: %s)' % str(token))
+
+            node2 = self.F(next_token)
 
             if node2 is None:
-                print('DIV : 2nd part missing, (token: %s)' % str(token))
-                return None
+                raise SyntaxError('DIV : wrong 2nd part, (token: %s, next_token: %s)' % (str(token), str(next_token)))
 
             self.size += 1
             return Node(nodes_const.NODE_DIV, [node1, node2])
+
+        elif token.category == categories_const.TOKEN_MODULO:
+            next_token = self.lexical.nextToken()
+
+            if next_token is None:
+                raise SyntaxError('MOD : 2nd part missing, (token: %s)' % str(token))
+
+            node2 = self.F(next_token)
+
+            if node2 is None:
+                raise SyntaxError('MOD : wrong 2nd part, (token: %s, next_token: %s)' % (str(token), str(next_token)))
+
+            self.size += 1
+            return Node(nodes_const.NODE_MOD, [node1, node2])
 
         self.lexical.undo()
         return node1
@@ -84,20 +118,28 @@ class Syntax:
             return node1
 
         if token.category == categories_const.TOKEN_PLUS:
-            node2 = self.T(self.lexical.nextToken())
+            next_token = self.lexical.nextToken()
+
+            if next_token is None:
+                raise SyntaxError('ADD : 2nd part missing, (token: %s)' % str(token))
+
+            node2 = self.T(next_token)
 
             if node2 is None:
-                print('ADD : 2nd part missing, (token: %s)' % str(token))
-                return None
+                raise SyntaxError('ADD : wrong 2nd part, (token: %s, next_token: %s)' % (str(token), str(next_token)))
 
             self.size += 1
             return Node(nodes_const.NODE_ADD, [node1, node2])
         elif token.category == categories_const.TOKEN_MINUS:
-            node2 = self.T(self.lexical.nextToken())
+            next_token = self.lexical.nextToken()
+
+            if next_token is None:
+                raise SyntaxError('ADD : 2nd part missing, (token: %s)' % str(token))
+
+            node2 = self.T(next_token)
 
             if node2 is None:
-                print('SUB : 2nd part missing, (token: %s)' % str(token))
-                return None
+                raise SyntaxError('SUB : wrong 2nd part, (token: %s, next_token: %s)' % (str(token), str(next_token)))
 
             self.size += 1
             return Node(nodes_const.NODE_BINARAY_MINUS, [node1, node2])

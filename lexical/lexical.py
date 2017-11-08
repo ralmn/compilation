@@ -24,3 +24,6 @@ class Lexical:
 
     def __len__(self):
         return len(self.tokens)
+
+    def isEnd(self):
+        return self.index >= len(self.tokens)

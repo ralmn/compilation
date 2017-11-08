@@ -1,7 +1,8 @@
 class NodeType:
 
-    def __init__(self, name):
+    def __init__(self, name, gencode = None):
         self.name = name
+        self.gencode = gencode
 
 
     def __eq__(self, other):
