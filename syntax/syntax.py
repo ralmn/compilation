@@ -153,7 +153,7 @@ class Syntax:
             categories_const.TOKEN_LOWER_THAN: nodes_const.NODE_LOWER_THAN,
             categories_const.TOKEN_LOWER_EQUALS_THAN: nodes_const.NODE_LOWER_EQUALS,
             categories_const.TOKEN_GREATER_THAN: nodes_const.NODE_GREATER_THAN,
-            categories_const.TOKEN_GREATER_EQUALS_THAN: nodes_const.NODE_GREATER_THAN,
+            categories_const.TOKEN_GREATER_EQUALS_THAN: nodes_const.NODE_GREATER_EQUALS,
 
         }
 
