@@ -12,8 +12,8 @@ def run(str):
 
     # TODO : Semantique
 
-    node_opti = optimisator.Optimisator(node).node
-    g = gencode.CodeGenerator(node_opti)
+    node = optimisator.Optimisator(node).node
+    g = gencode.CodeGenerator(node)
     print(g.getOutput())
 
 

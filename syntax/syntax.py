@@ -41,7 +41,7 @@ class Syntax:
             return Node(nodes_const.NODE_IDENTIFIANT, identifier=token.identifier)
 
         if token.category == categories_const.TOKEN_PARENTHESIS_OPEN:
-            node = self.T(self.lexical.nextToken())
+            node = self.E(self.lexical.nextToken())
             if self.lexical.nextToken().category == categories_const.TOKEN_PARENTHESIS_CLOSE:
                 return node
 
