@@ -1,15 +1,19 @@
 from __future__ import print_function
 
 import sys
-import lexical, syntax, gencode
+import lexical, syntax, gencode, optimisator
 
 
 def run(str):
 
     lex = lexical.Lexical(str)
-    synt = syntax.Syntax(lex)
 
-    g = gencode.CodeGenerator(synt)
+    node = syntax.Syntax(lex).node
+
+    # TODO : Semantique
+
+    node_opti = optimisator.Optimisator(node).node
+    g = gencode.CodeGenerator(node_opti)
     print(g.getOutput())
 
 

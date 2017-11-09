@@ -1,16 +1,15 @@
 class CodeGenerator:
 
-    def __init__(self, syntax):
-        self.syntax = syntax
+    def __init__(self, node):
+        self.node = node
         self.linesOut = []
         self.run()
 
 
     def run(self):
         self.linesOut.append(".start")
-        node = self.syntax.node
 
-        node.gencode(self)
+        self.node.gencode(self)
 
         self.linesOut.append("out.i")
         self.linesOut.append("halt")
