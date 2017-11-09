@@ -9,6 +9,8 @@ class Optimisator:
     def run(self):
         self.opti_minus_sub(self.node)
         self.node = self.opt_minus(self.node)
+        self.node = self.opt_operation(self.node)
+        # TODO : optimisation condition logique
 
 
     def opti_minus_sub(self, node):
@@ -44,4 +46,23 @@ class Optimisator:
                 return res
         return node
 
-
+    def opt_operation(self, node):
+        for i in range(len(node.children)):
+            node.children[i] = self.opt_operation(node.children[i])
+        if node.type == syntax.nodes_const.NODE_BINARAY_MINUS \
+                and node.children[0].type == syntax.nodes_const.NODE_CONSTANT \
+                and node.children[1].type == syntax.nodes_const.NODE_CONSTANT:
+            return syntax.Node(syntax.nodes_const.NODE_CONSTANT, value=node.children[0].value-node.children[1].value)
+        if node.type == syntax.nodes_const.NODE_ADD \
+                and node.children[0].type == syntax.nodes_const.NODE_CONSTANT \
+                and node.children[1].type == syntax.nodes_const.NODE_CONSTANT:
+            return syntax.Node(syntax.nodes_const.NODE_CONSTANT, value=node.children[0].value+node.children[1].value)
+        if node.type == syntax.nodes_const.NODE_MULT \
+                and node.children[0].type == syntax.nodes_const.NODE_CONSTANT \
+                and node.children[1].type == syntax.nodes_const.NODE_CONSTANT:
+            return syntax.Node(syntax.nodes_const.NODE_CONSTANT, value=node.children[0].value*node.children[1].value)
+        if node.type == syntax.nodes_const.NODE_DIV \
+                and node.children[0].type == syntax.nodes_const.NODE_CONSTANT \
+                and node.children[1].type == syntax.nodes_const.NODE_CONSTANT:
+            return syntax.Node(syntax.nodes_const.NODE_CONSTANT, value=node.children[0].value/node.children[1].value)
+        return node
