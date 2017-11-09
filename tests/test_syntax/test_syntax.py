@@ -61,6 +61,52 @@ class TestSyntax(unittest.TestCase):
 
         self.assertEqual(8, syn.size)
 
+    def test_not(self):
+        str = "!3"
+        lex = lexical.Lexical(str)
+
+        # self.assertEqual(8, len(lex))
+
+        syn = syntax.Syntax(lex)
+
+        self.assertEqual(2, syn.size)
+
+        str = "!!3"
+        lex = lexical.Lexical(str)
+
+        # self.assertEqual(8, len(lex))
+
+        syn = syntax.Syntax(lex)
+
+        self.assertEqual(3, syn.size)
+
+        str = "!(!1 + 2)"
+        lex = lexical.Lexical(str)
+
+        # self.assertEqual(8, len(lex))
+
+        syn = syntax.Syntax(lex)
+
+        self.assertEqual(5, syn.size)
+
+    def test_cond(self):
+
+        token_cond = ["&&", "||", "==", "!=", "<", "<=", ">", ">="]
+
+        for tok in token_cond:
+            print tok
+            str = "3 %s 1" % tok
+            lex = lexical.Lexical(str)
+
+            print(', '.join([t.category.name for t in lex.tokens]))
+            self.assertEqual(3, len(lex))
+
+            syn = syntax.Syntax(lex)
+
+            self.assertEqual(3, syn.size)
+
+
+
     def test_error(self):
         str = "3 * (2 + 4) * 1 ("
         lex = lexical.Lexical(str)
@@ -106,6 +152,8 @@ class TestSyntax(unittest.TestCase):
         with self.assertRaises(syntax.SyntaxError) as e:
             syntax.Syntax(lex)
         print(e.exception)
+
+
 
 
 if __name__ == '__main__':

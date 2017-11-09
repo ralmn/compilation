@@ -64,10 +64,31 @@ def tokenize(input_str):
             if c in categories_const.MAP_TOKENS:
                 category = categories_const.MAP_TOKENS[c]
                 if category in categories_const.TOKEN_MULTI_CHARS:
-                    pass
-                else:
-                    tokens.append(Token(category, line, column) )
 
+                    if len(input_str) > charIndex + 1:
+                        currentSymbol = input_str[charIndex:charIndex+2]
+                        if currentSymbol in categories_const.MAP_TOKENS:
+                            category = categories_const.MAP_TOKENS[currentSymbol]
+                            tokens.append(Token(category, line, column))
+                            charIndex += 2
+                            column += 2
+                            continue
+
+
+
+                tokens.append(Token(category, line, column) )
+
+            elif c in categories_const.TOKEN_UNIQUE_MULTI_CHARS:
+                charOffset = 1
+                while len(input_str) > charIndex + charOffset:
+                    currentSymbol = input_str[charIndex:charIndex + (charOffset + 1)]
+
+                    if currentSymbol in categories_const.MAP_TOKENS:
+                        category = categories_const.MAP_TOKENS[currentSymbol]
+                        tokens.append(Token(category, line, column))
+                        charIndex += charOffset
+                        column += charOffset
+                        break
 
         charIndex += 1
         column += 1

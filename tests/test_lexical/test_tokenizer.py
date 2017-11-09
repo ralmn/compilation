@@ -49,7 +49,33 @@ class TestTokenizer(unittest.TestCase):
         self.assertEqual(2, tokens[9].line)
 
 
+    def test_and(self):
+        tokens = lexical.tokenizer.tokenize("1 && 2")
+        self.assertEqual(3, len(tokens))
+        self.assertEqual("value", tokens[0].category.name)
+        self.assertEqual("and", tokens[1].category.name)
+        self.assertEqual("value", tokens[2].category.name)
 
+    def test_or(self):
+        tokens = lexical.tokenizer.tokenize("1 || 2")
+        self.assertEqual(3, len(tokens))
+        self.assertEqual("value", tokens[0].category.name)
+        self.assertEqual("or", tokens[1].category.name)
+        self.assertEqual("value", tokens[2].category.name)
+
+    def test_lower(self):
+        tokens = lexical.tokenizer.tokenize("1 < 2")
+        self.assertEqual(3, len(tokens))
+        self.assertEqual("value", tokens[0].category.name)
+        self.assertEqual("lower than", tokens[1].category.name)
+        self.assertEqual("value", tokens[2].category.name)
+
+    def test_lower_equals(self):
+        tokens = lexical.tokenizer.tokenize("1 <= 2")
+        self.assertEqual(3, len(tokens))
+        self.assertEqual("value", tokens[0].category.name)
+        self.assertEqual("lower equals than", tokens[1].category.name)
+        self.assertEqual("value", tokens[2].category.name)
 
 
 

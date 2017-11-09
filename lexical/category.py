@@ -13,5 +13,5 @@ class Category:
     def __repr__(self):
         return "Category(%s)" % self.name
 
-
-
+    def __hash__(self):
+        return hash(self.name)

@@ -113,4 +113,7 @@ TOKEN_MULTI_CHARS = [
     TOKEN_POINTER_ADRESS # -> &&
 ]
 
+TOKEN_UNIQUE_MULTI_CHARS = ['|']
+
+
 MAP_TOKENS = {cat.symbol: cat for cat in ALL_TOKENS}
