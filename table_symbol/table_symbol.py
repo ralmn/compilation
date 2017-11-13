@@ -14,30 +14,30 @@ class TableSymbol:
             raise Exception("Canno't close global block")
         self.stack.pop()
 
-    def newSymbol(self, token):
-        token_name = token.identifier
+    def newSymbol(self, node):
+        node_name = node.identifier
         current_block = self._getCurrentBlock()
-        if token_name not in current_block:
-            symbol = Symbol(token_name, token)
-            current_block[token_name] = symbol
+        if node_name not in current_block:
+            symbol = Symbol(node_name, node)
+            current_block[node_name] = symbol
             return symbol
         else:
-            raise Exception("Canno't declare %s (line: %d, column %d)" % (token_name, token.line, token.column))
+            raise Exception("Canno't declare %s" % (node_name))
 
-    def getSymbol(self, token):
+    def getSymbol(self, node):
         index = len(self.stack) - 1
 
-        token_name = token.identifier
+        node_name = node.identifier
 
         while index > 0:
             block = self.stack[index]
 
-            if token_name in block:
-                return block[token_name]
+            if node_name in block:
+                return block[node_name]
 
             index -= 1
 
-        raise Exception("Undifined symbol %s (line: %d, column %d)" % (token_name, token.line, token.column))
+        raise Exception("Undifined symbol %s " % (node_name))
 
 
     def _getCurrentBlock(self):

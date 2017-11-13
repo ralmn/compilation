@@ -95,16 +95,42 @@ class TestSyntax(unittest.TestCase):
 
         for tok in token_cond:
             print tok
-            str = "3 %s 1" % tok
+            str = "3 %s 1;" % tok
             lex = lexical.Lexical(str)
 
             print(', '.join([t.category.name for t in lex.tokens]))
-            self.assertEqual(3, len(lex))
+            self.assertEqual(4, len(lex))
 
             syn = syntax.Syntax(lex)
 
             self.assertEqual(3, syn.size)
 
+    def test_cond_equals_only(self):
+
+        str = "3 == 1;"
+        lex = lexical.Lexical(str)
+
+        print(', '.join([t.category.name for t in lex.tokens]))
+        self.assertEqual(4, len(lex))
+
+        syn = syntax.Syntax(lex)
+
+        self.assertEqual(3, syn.size)
+
+
+    def test_cond_e(self):
+
+
+            str = "3 == 1"
+            lex = lexical.Lexical(str)
+
+            print(', '.join([t.category.name for t in lex.tokens]))
+            self.assertEqual(3, len(lex))
+
+            syn = syntax.Syntax(lex, run=False)
+            syn.E(lex.current())
+
+            self.assertEqual(3, syn.size)
 
 
     def test_error(self):

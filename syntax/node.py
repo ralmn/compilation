@@ -5,6 +5,7 @@ class Node:
         self.children = children
         self.identifier = identifier
         self.value = value
+        self.slot = None
 
     def gencode(self, gCode):
         gencode = self.type.gencode
@@ -12,7 +13,9 @@ class Node:
         if gencode is not None:
             gencode(gCode, self)
         else:
-            raise Exception("Umanaged node type.")
+            raise Exception("Umanaged node type. %s" % self.type)
+
+
 
 
 

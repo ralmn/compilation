@@ -20,6 +20,10 @@ def genCodeNot(genCode, node):
     genCode.linesOut.append("not")
 
 
+def genCodeBlock(genCode, node):
+    pass
+
+
 NODE_CONSTANT = NodeType("constant", genCodeConst)
 NODE_IDENTIFIANT = NodeType("identifiant")
 
@@ -44,3 +48,11 @@ NODE_LOWER_EQUALS = NodeType("lower equals", lambda g, n: genCodeMathOrCondition
 
 NODE_AND = NodeType("and", lambda g, n: genCodeMathOrConditional(g, "and", n))
 NODE_OR = NodeType("or", lambda g, n: genCodeMathOrConditional(g, "or", n))
+
+NODE_BLOCK = NodeType("block", genCodeBlock)
+
+NODE_VAR_DECL = NodeType("Variable declaration")
+NODE_VAR_REF = NodeType("Variable reference")
+NODE_AFFECTATION = NodeType("Affectation")
+
+NODE_IF = NodeType("if")

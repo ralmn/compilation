@@ -1,16 +1,22 @@
 from __future__ import print_function
 
 import sys
-import lexical, syntax, gencode, optimisator
+import lexical, syntax, gencode, optimisator, table_symbol, semantic
 
 
 def run(str):
+
+    tableSymbol = table_symbol.TableSymbol()
 
     lex = lexical.Lexical(str)
 
     node = syntax.Syntax(lex).node
 
     # TODO : Semantique
+
+    sem = semantic.Semantic(tableSymbol)
+    sem.run(node)
+
 
     node = optimisator.Optimisator(node).node
     g = gencode.CodeGenerator(node)
