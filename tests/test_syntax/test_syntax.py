@@ -52,7 +52,7 @@ class TestSyntax(unittest.TestCase):
         self.assertEqual('y', child.identifier)
 
     def test_global(self):
-        str = "3 + x * 2 * -z"
+        str = "3 + x * 2 * -z;"
         lex = lexical.Lexical(str)
 
         # self.assertEqual(8, len(lex))
@@ -62,7 +62,7 @@ class TestSyntax(unittest.TestCase):
         self.assertEqual(8, syn.size)
 
     def test_not(self):
-        str = "!3"
+        str = "!3;"
         lex = lexical.Lexical(str)
 
         # self.assertEqual(8, len(lex))
@@ -71,7 +71,7 @@ class TestSyntax(unittest.TestCase):
 
         self.assertEqual(2, syn.size)
 
-        str = "!!3"
+        str = "!!3;"
         lex = lexical.Lexical(str)
 
         # self.assertEqual(8, len(lex))
@@ -80,7 +80,7 @@ class TestSyntax(unittest.TestCase):
 
         self.assertEqual(3, syn.size)
 
-        str = "!(!1 + 2)"
+        str = "!(!1 + 2);"
         lex = lexical.Lexical(str)
 
         # self.assertEqual(8, len(lex))
@@ -105,7 +105,7 @@ class TestSyntax(unittest.TestCase):
 
             self.assertEqual(3, syn.size)
 
-    def test_cond_equals_only(self):
+    def test_statement_equals(self):
 
         str = "3 == 1;"
         lex = lexical.Lexical(str)
@@ -180,6 +180,64 @@ class TestSyntax(unittest.TestCase):
         print(e.exception)
 
 
+    def test_block(self):
+
+        str = '{ 3 + 3; 2 +2; }'
+
+        lex = lexical.Lexical(str)
+
+        self.assertEqual(10, len(lex))
+
+        syn = syntax.Syntax(lex)
+
+        self.assertEqual(7, syn.size)
+
+
+    def test_if(self):
+        str = "if (3 == 2) { 2 + 1; 4 + 3; }"
+
+
+        lex = lexical.Lexical(str)
+
+        self.assertEqual(16, len(lex))
+
+        syn = syntax.Syntax(lex)
+
+        self.assertEqual(10, syn.size)
+
+    def test_if_else(self):
+        str = "if (3 == 2) { 2 + 1; 4 + 3; } else { 3 + 5; }"
+
+        lex = lexical.Lexical(str)
+
+        self.assertEqual(23, len(lex))
+
+        syn = syntax.Syntax(lex)
+
+        self.assertEqual(13, syn.size)
+
+    def test_declaration(self):
+        str = "int a;"
+
+        lex = lexical.Lexical(str)
+
+        self.assertEqual(3, len(lex))
+
+        syn = syntax.Syntax(lex)
+
+        self.assertEqual(1, syn.size)
+
+
+    def test_affectation(self):
+        str = "a = 10 + 2;"
+
+        lex = lexical.Lexical(str)
+
+        self.assertEqual(6, len(lex))
+
+        syn = syntax.Syntax(lex)
+
+        self.assertEqual(4, syn.size)
 
 
 if __name__ == '__main__':

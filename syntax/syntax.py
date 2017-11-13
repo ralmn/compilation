@@ -37,7 +37,7 @@ class Syntax:
 
     def run(self):
         self.node = self.S(self.lexical.current())
-
+        self.lexical.nextToken()
         if not self.lexical.isEnd():
             raise SyntaxError("Unexpected token %s" % str(self.lexical.nextToken()))
 
@@ -51,7 +51,8 @@ class Syntax:
 
         if token.category == categories_const.TOKEN_PARENTHESIS_OPEN:
             node = self.E(self.lexical.nextToken())
-            if self.lexical.nextToken().category == categories_const.TOKEN_PARENTHESIS_CLOSE:
+            nxtToken = self.lexical.nextToken()
+            if nxtToken.category == categories_const.TOKEN_PARENTHESIS_CLOSE:
                 return node
 
         if token.category == categories_const.TOKEN_MINUS:
@@ -260,10 +261,11 @@ class Syntax:
 
     def S(self, token):
 
-        nextToken = self.lexical.nextToken()
+
 
         if token.category == categories_const.TOKEN_CURLY_BRACKET_OPEN:
             # '{' S* '}'
+            nextToken = self.lexical.nextToken()
 
             nodesBlockChildren = []
 
@@ -278,13 +280,14 @@ class Syntax:
                 raise SyntaxError('Block : Bracket not closed.(%s) ' % str(token))
 
             nodeBlock = Node(nodes_const.NODE_BLOCK, nodesBlockChildren)
-            nextToken = self.lexical.nextToken()
+            #nextToken = self.lexical.nextToken()
+            self.size += 1
             return nodeBlock
 
         # Debut gestion A
 
-        if nextToken is None:
-            raise SyntaxError('Statement is not finish (%s)' % str(token))
+        # if nextToken is None:
+        #     raise SyntaxError('Statement is not finish (%s)' % str(token))
 
         nodeA = self.A(token)
 
@@ -315,10 +318,16 @@ class Syntax:
         # Debut gestion if
 
         if token.category == categories_const.TOKEN_IF:
+
+            nextToken = self.lexical.nextToken()
+
+            if nextToken is None:
+                raise SyntaxError('If : not finished statement (%s)' % str(token))
+
             if nextToken.category != categories_const.TOKEN_PARENTHESIS_OPEN:
                 raise SyntaxError('IF : Missing opening parenthesis for condition (%s)' % str(token))
 
-            self.lexical.undo()
+            #self.lexical.undo()
 
             nodeCondition = self.E(nextToken)
 
@@ -334,16 +343,17 @@ class Syntax:
             if nodeS1 is None:
                 raise SyntaxError('IF : Missing statement (%s) ' % str(token))
 
-            tokenElse = self.lexical.nextToken()
+            tokenElse = self.lexical.current()
             if tokenElse is None or tokenElse.category != categories_const.TOKEN_ELSE:
-                self.lexical.undo()
+                #self.lexical.undo()
+                self.size += 1
                 return Node(nodes_const.NODE_IF, [nodeCondition, nodeS1])
 
             nextToken = self.lexical.nextToken()
             nodeS2 = self.S(nextToken)
             if nodeS2 is None:
                 raise SyntaxError('Else : Missing statement (%s) ' % str(token))
-
+            self.size += 1
             return Node(nodes_const.NODE_IF, [nodeCondition, nodeS1, nodeS2])
 
         # fin gestion IF
@@ -351,12 +361,19 @@ class Syntax:
         # debut gestion declaration
 
         if token.category == categories_const.TOKEN_INT:
+
+            nextToken = self.lexical.nextToken()
+
+            if nextToken is None:
+                raise SyntaxError('DECLARATION : incomplete statement (%s)' % str(token))
+
             if nextToken.category != categories_const.TOKEN_IDENT:
                 raise SyntaxError('DECLARATION : Missing identifier (%s)' % str(token))
 
             nextTokenAfterIdent = self.lexical.nextToken()
 
             if nextTokenAfterIdent.category == categories_const.TOKEN_SEMICOLON:
+                self.size += 1
                 return Node(nodes_const.NODE_VAR_DECL, children=[], identifier=nextToken.identifier)
             else:
                 raise SyntaxError('DECLARATION : Missing semicolon (%s)' % str(token))
@@ -369,7 +386,7 @@ class Syntax:
 
         tokenEquals = self.lexical.nextToken()
 
-        if tokenEquals.category != categories_const.TOKEN_EQUALS:
+        if tokenEquals.category != categories_const.TOKEN_AFFECT:
             self.lexical.undo()
             return None
 
@@ -383,4 +400,5 @@ class Syntax:
         if nodeAfterExpression is None:
             raise SyntaxError("Affectation : incorrect expression after equals (%s) " % str(token))
 
+        self.size += 1
         return Node(nodes_const.NODE_AFFECTATION, [nodeAfterExpression], identifier=tokenIden.identifier)
