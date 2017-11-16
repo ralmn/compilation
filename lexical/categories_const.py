@@ -64,6 +64,8 @@ TOKEN_AFFECT = Category("affectation", "=")
 TOKEN_IDENT = Category("identifiant", "^[a-zA-Z][a-zA-Z0-9]*")
 TOKEN_VALUE = Category("value", "[0-9]+")
 
+TOKEN_OUT = Category("out", "out")
+
 
 ALL_TOKENS = [
     TOKEN_IF,
@@ -102,7 +104,8 @@ ALL_TOKENS = [
     TOKEN_COMMA,
     TOKEN_AFFECT,
     TOKEN_IDENT,
-    TOKEN_VALUE
+    TOKEN_VALUE,
+    TOKEN_OUT
 ]
 
 TOKEN_MULTI_CHARS = [

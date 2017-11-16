@@ -37,6 +37,8 @@ class Syntax:
 
     def run(self):
         self.node = self.S(self.lexical.current())
+        if self.node is None:
+            raise SyntaxError("Unexpected statement %s" % str(self.lexical.tokens[0]))
         self.lexical.nextToken()
         if not self.lexical.isEnd():
             raise SyntaxError("Unexpected token %s" % str(self.lexical.nextToken()))
@@ -261,8 +263,6 @@ class Syntax:
 
     def S(self, token):
 
-
-
         if token.category == categories_const.TOKEN_CURLY_BRACKET_OPEN:
             # '{' S* '}'
             nextToken = self.lexical.nextToken()
@@ -309,11 +309,36 @@ class Syntax:
             nextTokenAfterE = self.lexical.nextToken()
 
             if nextTokenAfterE.category == categories_const.TOKEN_SEMICOLON:
-                return nodeE
+                self.size += 1
+                return Node(nodes_const.NODE_DROP, [nodeE])
 
             raise SyntaxError("Expression: Missing semicolon (%s) " % str(token))
 
         # fin gestion E
+
+        # debut gestion out
+
+        if token.category == categories_const.TOKEN_OUT:
+            nextToken = self.lexical.nextToken()
+
+            if nextToken is None:
+                raise SyntaxError("Out: Missing expression to print (%s)" % str(token))
+
+            nodeExpression = self.E(nextToken)
+
+            if nodeExpression is None:
+                raise SyntaxError("Out: unexpected expression to print (%s)" % str(nextToken))
+
+            nextTokenAfterE = self.lexical.nextToken()
+
+            if nextTokenAfterE.category == categories_const.TOKEN_SEMICOLON:
+                self.size += 1
+                return Node(nodes_const.NODE_OUT, [nodeExpression])
+
+            raise SyntaxError("Out: Missing semicolon (%s) " % str(token))
+
+
+        # fin gestion out
 
         # Debut gestion if
 
@@ -322,7 +347,7 @@ class Syntax:
             nextToken = self.lexical.nextToken()
 
             if nextToken is None:
-                raise SyntaxError('If : not finished statement (%s)' % str(token))
+                raise SyntaxError('IF : not finished statement (%s)' % str(token))
 
             if nextToken.category != categories_const.TOKEN_PARENTHESIS_OPEN:
                 raise SyntaxError('IF : Missing opening parenthesis for condition (%s)' % str(token))
@@ -357,6 +382,44 @@ class Syntax:
             return Node(nodes_const.NODE_IF, [nodeCondition, nodeS1, nodeS2])
 
         # fin gestion IF
+
+
+        # debut gestion WHILE
+
+        if token.category == categories_const.TOKEN_WHILE:
+            nextToken = self.lexical.nextToken()
+
+            if nextToken is None:
+                raise SyntaxError('WHILE : not finished statement (%s)' % str(token))
+
+            if nextToken.category != categories_const.TOKEN_PARENTHESIS_OPEN:
+                raise SyntaxError('WHILE : Missing opening parenthesis for condition (%s)' % str(token))
+
+            # self.lexical.undo()
+
+            nodeCondition = self.E(nextToken)
+
+            if nodeCondition is None:
+                raise SyntaxError('WHILE : Missing condition (%s) ' % str(token))
+
+            nextToken = self.lexical.nextToken()
+
+            if nextToken is None:
+                raise SyntaxError('WHILE : Missing statement (%s) ' % str(token))
+
+            nodeS = self.S(nextToken)
+            if nodeS is None:
+                raise SyntaxError('WHILE : Missing statement (%s) ' % str(token))
+
+            self.size += 3 # loop + if + ?????BREAK POURQUOI ON LA PAS ?
+            nodeIf = Node(nodes_const.NODE_IF, children=[nodeCondition, nodeS, Node(nodes_const.NODE_BREAK)])
+            arrayIf = []
+            arrayIf.append(nodeIf)
+
+
+            return Node(nodes_const.NODE_LOOP, children=[nodeIf])
+
+        # fin gestion WHILE
 
         # debut gestion declaration
 

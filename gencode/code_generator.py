@@ -11,7 +11,6 @@ class CodeGenerator:
 
         self.node.gencode(self)
 
-        self.linesOut.append("out.i")  # TODO : Voir si on peut pas faire un truc pour le retirer
         self.linesOut.append("halt")
 
     def getOutput(self):

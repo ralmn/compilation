@@ -1,6 +1,8 @@
 class Node:
 
-    def __init__(self, type, children=[], identifier=None, value=None):
+    def __init__(self, type, children=None, identifier=None, value=None):
+        if children is None:
+            children = []
         self.type = type
         self.children = children
         self.identifier = identifier
@@ -15,6 +17,10 @@ class Node:
         else:
             raise Exception("Umanaged node type. %s" % self.type)
 
+    def __repr__(self):
+        #return "Node (%s, nbChild=%s, ident=%s, val=%s, slot=%s)" % (self.type, len(self.children), self.identifier, self.value, self.slot)
+
+        return "%s(%s)" % (self.type.name, ', '.join([str(c) for c in self.children]))
 
 
 

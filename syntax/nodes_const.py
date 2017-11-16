@@ -1,6 +1,15 @@
 from nodes_types import NodeType
 
 
+idLabel = 0
+
+
+def genLabel():
+    global idLabel
+    idLabel += 1
+    return "label" + str(idLabel)
+
+
 def genCodeConst(genCode, node):
     genCode.linesOut.append("push.i %s" % node.value)
 
@@ -10,10 +19,12 @@ def genCodeMathOrConditional(genCode, command, node):
     node.children[1].gencode(genCode)
     genCode.linesOut.append(command)
 
+
 def genCodeUnitaryMinus(genCode, node):
     genCode.linesOut.append("push.i 0")
     node.children[0].gencode(genCode)
     genCode.linesOut.append("sub.i")
+
 
 def genCodeNot(genCode, node):
     node.children[0].gencode(genCode)
@@ -21,7 +32,37 @@ def genCodeNot(genCode, node):
 
 
 def genCodeBlock(genCode, node):
-    pass
+    for c in node.children:
+        c.gencode(genCode)
+
+
+def genCodeOut(genCode, node):
+    node.children[0].gencode(genCode)
+    genCode.linesOut.append("out.i")
+
+
+def genCodeDrop(genCode, node):
+    node.children[0].gencode(genCode)
+    genCode.linesOut.append("drop")
+
+
+def genCodeIf(genCode, node):
+    l_else = genLabel()
+
+    node.children[0].gencode(genCode)
+    genCode.linesOut.append("jumpf %s" % l_else)
+    node.children[1].gencode(genCode)
+
+    hasElse = len(node.children) == 3
+    if hasElse:
+        l_after = genLabel()
+        genCode.linesOut.append("jump %s" % l_after)
+
+    genCode.linesOut.append(".%s" % l_else)
+
+    if hasElse:
+        node.children[2].gencode(genCode)
+        genCode.linesOut.append(".%s" % l_after)
 
 
 NODE_CONSTANT = NodeType("constant", genCodeConst)
@@ -55,4 +96,13 @@ NODE_VAR_DECL = NodeType("Variable declaration")
 NODE_VAR_REF = NodeType("Variable reference")
 NODE_AFFECTATION = NodeType("Affectation")
 
-NODE_IF = NodeType("if")
+NODE_DROP = NodeType('Drop', genCodeDrop)
+
+NODE_OUT = NodeType("out", genCodeOut)
+
+NODE_IF = NodeType("if", genCodeIf)
+
+NODE_LOOP = NodeType("loop")
+NODE_BREAK = NodeType("break")
+NODE_CONTINUE = NodeType("continue")
+

@@ -12,8 +12,6 @@ def run(str):
 
     node = syntax.Syntax(lex).node
 
-    # TODO : Semantique
-
     sem = semantic.Semantic(tableSymbol)
     sem.run(node)
 

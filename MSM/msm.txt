@@ -112,6 +112,6 @@ Communication:
 
   out.i / out.f / out.c:
     Dépile la valeur au sommet de la pile et l'affiche sur la console sous la
-    forme d'un entier, d'un réel ou d'un caractère.
+    forme d'un entier, d'un réel ou d'un caractère.<
 
 

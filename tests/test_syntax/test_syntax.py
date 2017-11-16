@@ -59,7 +59,7 @@ class TestSyntax(unittest.TestCase):
 
         syn = syntax.Syntax(lex)
 
-        self.assertEqual(8, syn.size)
+        self.assertEqual(9, syn.size)
 
     def test_not(self):
         str = "!3;"
@@ -69,7 +69,7 @@ class TestSyntax(unittest.TestCase):
 
         syn = syntax.Syntax(lex)
 
-        self.assertEqual(2, syn.size)
+        self.assertEqual(3, syn.size)
 
         str = "!!3;"
         lex = lexical.Lexical(str)
@@ -78,7 +78,7 @@ class TestSyntax(unittest.TestCase):
 
         syn = syntax.Syntax(lex)
 
-        self.assertEqual(3, syn.size)
+        self.assertEqual(4, syn.size)
 
         str = "!(!1 + 2);"
         lex = lexical.Lexical(str)
@@ -87,7 +87,7 @@ class TestSyntax(unittest.TestCase):
 
         syn = syntax.Syntax(lex)
 
-        self.assertEqual(5, syn.size)
+        self.assertEqual(6, syn.size)
 
     def test_cond(self):
 
@@ -103,7 +103,7 @@ class TestSyntax(unittest.TestCase):
 
             syn = syntax.Syntax(lex)
 
-            self.assertEqual(3, syn.size)
+            self.assertEqual(4, syn.size)
 
     def test_statement_equals(self):
 
@@ -115,7 +115,7 @@ class TestSyntax(unittest.TestCase):
 
         syn = syntax.Syntax(lex)
 
-        self.assertEqual(3, syn.size)
+        self.assertEqual(4, syn.size)
 
 
     def test_cond_e(self):
@@ -190,7 +190,7 @@ class TestSyntax(unittest.TestCase):
 
         syn = syntax.Syntax(lex)
 
-        self.assertEqual(7, syn.size)
+        self.assertEqual(9, syn.size)
 
 
     def test_if(self):
@@ -203,7 +203,7 @@ class TestSyntax(unittest.TestCase):
 
         syn = syntax.Syntax(lex)
 
-        self.assertEqual(11, syn.size)
+        self.assertEqual(13, syn.size)
 
     def test_if_else(self):
         str = "if (3 == 2) { 2 + 1; 4 + 3; } else { 3 + 5; }"
@@ -214,7 +214,7 @@ class TestSyntax(unittest.TestCase):
 
         syn = syntax.Syntax(lex)
 
-        self.assertEqual(15, syn.size)
+        self.assertEqual(18, syn.size)
 
     def test_declaration(self):
         str = "int a;"
@@ -252,6 +252,43 @@ class TestSyntax(unittest.TestCase):
             syntax.Syntax(lex)
         print(e.exception)
 
+    def test_out(self):
+        str = "out 2;"
+
+        lex = lexical.Lexical(str)
+
+        self.assertEqual(3, len(lex))
+
+        syn = syntax.Syntax(lex)
+
+        self.assertEqual(2, syn.size)
+
+    def test_out_addition(self):
+        str = "out 2 + 1;"
+
+        lex = lexical.Lexical(str)
+
+        self.assertEqual(5, len(lex))
+
+        syn = syntax.Syntax(lex)
+
+        self.assertEqual(4, syn.size)
+
+    def test_while(self):
+        str = "while(1 + 1) 1 + 3; "
+
+        self.test_generic(str, 10, 10)
+
+        str = "while(1 + 1){ 1 + 3; }"
+        self.test_generic(str, 12, 11)
+
+    def test_generic(self, str, lexSize, synSize):
+        lex = lexical.Lexical(str)
+        self.assertEqual(lexSize, len(lex))
+
+        syn = syntax.Syntax(lex)
+        print(syn.node)
+        self.assertEqual(synSize, syn.size)
 
 if __name__ == '__main__':
     unittest.main()

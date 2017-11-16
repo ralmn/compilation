@@ -77,6 +77,12 @@ class TestTokenizer(unittest.TestCase):
         self.assertEqual("lower equals than", tokens[1].category.name)
         self.assertEqual("value", tokens[2].category.name)
 
+    def test_out(self):
+        tokens = lexical.tokenizer.tokenize("out 1")
+        self.assertEqual(2, len(tokens))
+        self.assertEqual("out", tokens[0].category.name)
+        self.assertEqual("value", tokens[1].category.name)
+
 
 
 if __name__ == '__main__':
