@@ -343,7 +343,7 @@ class Syntax:
             if nodeS1 is None:
                 raise SyntaxError('IF : Missing statement (%s) ' % str(token))
 
-            tokenElse = self.lexical.current()
+            tokenElse = self.lexical.nextToken()
             if tokenElse is None or tokenElse.category != categories_const.TOKEN_ELSE:
                 #self.lexical.undo()
                 self.size += 1

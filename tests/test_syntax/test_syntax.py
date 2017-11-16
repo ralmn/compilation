@@ -203,7 +203,7 @@ class TestSyntax(unittest.TestCase):
 
         syn = syntax.Syntax(lex)
 
-        self.assertEqual(10, syn.size)
+        self.assertEqual(11, syn.size)
 
     def test_if_else(self):
         str = "if (3 == 2) { 2 + 1; 4 + 3; } else { 3 + 5; }"
@@ -214,7 +214,7 @@ class TestSyntax(unittest.TestCase):
 
         syn = syntax.Syntax(lex)
 
-        self.assertEqual(13, syn.size)
+        self.assertEqual(15, syn.size)
 
     def test_declaration(self):
         str = "int a;"
@@ -238,6 +238,19 @@ class TestSyntax(unittest.TestCase):
         syn = syntax.Syntax(lex)
 
         self.assertEqual(4, syn.size)
+
+
+    def test_if_malformated(self):
+
+        str ="if ( 1 || b { 1 + 2; }"
+
+        lex = lexical.Lexical(str)
+
+        self.assertEqual(11, len(lex))
+
+        with self.assertRaises(syntax.SyntaxError) as e:
+            syntax.Syntax(lex)
+        print(e.exception)
 
 
 if __name__ == '__main__':
