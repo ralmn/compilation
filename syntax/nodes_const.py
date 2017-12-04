@@ -162,3 +162,4 @@ NODE_LOOP = NodeType("loop", genCodeLoop)
 NODE_BREAK = NodeType("break", genCodeBreak)
 NODE_CONTINUE = NodeType("continue", genCodeContinue)
 
+NODE_FUNC = NodeType("function")

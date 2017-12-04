@@ -464,7 +464,6 @@ class Syntax:
 
         # fin gestion declaration
 
-
     def A(self, token):
 
         tokenIden = token
@@ -487,3 +486,48 @@ class Syntax:
 
         self.size += 1
         return Node(nodes_const.NODE_AFFECTATION, [nodeAfterExpression], identifier=tokenIden.identifier)
+
+    def D(self, token):
+        if token.category != categories_const.TOKEN_INT:
+            raise SyntaxError("Function : Missing int (%s) " % str(token))
+
+        nextTokenIdent = self.lexical.nextToken()
+        if nextTokenIdent.category != categories_const.TOKEN_IDENT:
+            raise SyntaxError("Function : Missing function name (%s) " % str(nextTokenIdent))
+
+        nextToken = self.lexical.nextToken()
+        if nextToken.category != categories_const.TOKEN_PARENTHESIS_OPEN:
+            raise SyntaxError("Function : Missing opening parenthesis (%s) " % str(nextToken))
+
+        nextToken = self.lexical.nextToken()
+
+        params = []
+
+        while nextToken.category == categories_const.TOKEN_INT:
+            nextToken = self.lexical.nextToken()
+            if nextToken.category != categories_const.TOKEN_IDENT:
+                raise SyntaxError("Function : Missing params name (%s) " % str(nextToken))
+            params.append(nextToken.identifier)
+
+            nextToken = self.lexical.nextToken()
+            if nextToken.category != categories_const.TOKEN_COMMA:
+                break
+
+            nextToken = self.lexical.nextToken()
+
+        nextToken = self.lexical.nextToken()
+        if nextToken.category != categories_const.TOKEN_PARENTHESIS_CLOSE:
+            raise SyntaxError("Function : Missing closing parenthesis (%s) " % str(nextToken))
+
+        nextToken = self.lexical.nextToken()
+
+        nodeS = self.S(nextToken)
+        if nodeS is None:
+            raise SyntaxError("Function : Missing function body (%s) " % str(nextToken))
+
+        return Node(type=nodes_const.NODE_FUNC, children=[nodeS], params=params)
+
+
+
+
+

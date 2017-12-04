@@ -1,4 +1,5 @@
 import syntax
+from syntax import nodes_const
 
 class Semantic:
 
@@ -27,6 +28,16 @@ class Semantic:
         else:
             for child in node.children:
                 self.run(child)
+
+    def semLoop(self, node):
+        if node.type == nodes_const.NODE_LOOP:
+            return
+        if node.type == nodes_const.NODE_CONTINUE or node.type == nodes_const.NODE_BREAK:
+            # TODO : Faire une sementique exception
+            raise Exception("Sementique exception : %s not in loop" % node.type.name)
+
+        for c in node.children:
+            self.semLoop(c)
 
 
     def nextNbVar(self):
