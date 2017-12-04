@@ -5,7 +5,7 @@ import nodes_const
 from syntax_error import SyntaxError
 
 
-# P = constant | identifiant | ( E ) | - P | !P
+# P = constant | identifiant '(' [ [E,]* E]?  ')' | ( E ) | - P | !P
 
 # F = P * F | P / F | P % F | P
 
@@ -22,10 +22,13 @@ from syntax_error import SyntaxError
 #	| E ';'
 #	| 'if' '(' E ')' S (else S )?
 #	| 'int' ident ';'
+#   | break | continue | while | do while | for
 
 # A <- ident '=' E
 
+# D -> int ident '(' [int ident]* ')' S
 
+# Z -> D*
 
 class Syntax:
     def __init__(self, lexical, run=True):
@@ -49,7 +52,7 @@ class Syntax:
             return Node(nodes_const.NODE_CONSTANT, value=token.value)
         if token.category == categories_const.TOKEN_IDENT:
             self.size += 1
-            return Node(nodes_const.NODE_IDENTIFIANT, identifier=token.identifier)
+            return Node(nodes_const.NODE_VAR_REF, identifier=token.identifier)
 
         if token.category == categories_const.TOKEN_PARENTHESIS_OPEN:
             node = self.E(self.lexical.nextToken())
@@ -421,6 +424,24 @@ class Syntax:
 
         # fin gestion WHILE
 
+        #debut gestion break
+
+        if token.category == categories_const.TOKEN_BREAK:
+            self.size += 1
+            nextToken = self.lexical.nextToken()
+            return Node(nodes_const.NODE_BREAK)
+
+        #fin gestion break
+
+        # debut gestion continue
+
+        if token.category == categories_const.TOKEN_CONTINUE:
+            self.size += 1
+            nextToken = self.lexical.nextToken()
+            return Node(nodes_const.NODE_CONTINUE)
+
+        # fin gestion continue
+
         # debut gestion declaration
 
         if token.category == categories_const.TOKEN_INT:
@@ -442,6 +463,7 @@ class Syntax:
                 raise SyntaxError('DECLARATION : Missing semicolon (%s)' % str(token))
 
         # fin gestion declaration
+
 
     def A(self, token):
 

@@ -1,5 +1,13 @@
-if (0){
-    out 1;
-} else {
-    out 0;
+{
+    int a;
+    a = 1;
+    int b;
+    b = 0;
+    while(a < 10){
+        a = a + 2;
+        b = b + 1;
+        out a;
+    }
+    out b;
+
 }

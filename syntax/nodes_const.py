@@ -3,12 +3,15 @@ from nodes_types import NodeType
 
 idLabel = 0
 
+labelStack = []
+lStart = None
+lEnd = None
+
 
 def genLabel():
     global idLabel
     idLabel += 1
     return "label" + str(idLabel)
-
 
 def genCodeConst(genCode, node):
     genCode.linesOut.append("push.i %s" % node.value)
@@ -65,6 +68,59 @@ def genCodeIf(genCode, node):
         genCode.linesOut.append(".%s" % l_after)
 
 
+def genCodeLoop(genCode, node):
+
+    global lStart, lEnd, labelStack
+
+    labelStack.append(lStart)
+    labelStack.append(lEnd)
+
+    lStart = genLabel()
+    lEnd = genLabel()
+
+    genCode.linesOut.append("; debut while")
+    genCode.linesOut.append(".%s" % lStart)
+
+    nodeIf = node.children[0]
+
+    E = nodeIf.children[0]
+    S = nodeIf.children[1]
+
+    E.gencode(genCode)
+    genCode.linesOut.append("jumpf %s" % lEnd)
+
+    S.gencode(genCode)
+    genCode.linesOut.append("jump %s" % lStart)
+
+    genCode.linesOut.append(".%s" % lEnd)
+
+    genCode.linesOut.append("; fin while")
+
+    lEnd = labelStack.pop()
+    lStart = labelStack.pop()
+
+
+def genCodeBreak(genCode, node):
+    global lEnd
+    genCode.linesOut.append("jump %s ; break" % lEnd)  # lEnd
+
+
+def genCodeContinue(genCode, node):
+    global lStart
+    genCode.linesOut.append("jump %s ; continue" % lStart)  # lStart
+
+
+def genCodeDecl(genCode, node):
+    genCode.linesOut.append("push.i 999 ; int %s (decl)" % node.identifier)
+
+
+def genCodeAffectation(genCode, node):
+    node.children[0].gencode(genCode)
+    genCode.linesOut.append("set %s ; %s (affect) " % (node.slot, node.identifier))
+
+def genCodeRef(genCode, node):
+    genCode.linesOut.append("get %s ; %s (ref)" % (node.slot, node.identifier))
+
 NODE_CONSTANT = NodeType("constant", genCodeConst)
 NODE_IDENTIFIANT = NodeType("identifiant")
 
@@ -92,9 +148,9 @@ NODE_OR = NodeType("or", lambda g, n: genCodeMathOrConditional(g, "or", n))
 
 NODE_BLOCK = NodeType("block", genCodeBlock)
 
-NODE_VAR_DECL = NodeType("Variable declaration")
-NODE_VAR_REF = NodeType("Variable reference")
-NODE_AFFECTATION = NodeType("Affectation")
+NODE_VAR_DECL = NodeType("Variable declaration", genCodeDecl)
+NODE_VAR_REF = NodeType("Variable reference", genCodeRef)
+NODE_AFFECTATION = NodeType("Affectation", genCodeAffectation)
 
 NODE_DROP = NodeType('Drop', genCodeDrop)
 
@@ -102,7 +158,7 @@ NODE_OUT = NodeType("out", genCodeOut)
 
 NODE_IF = NodeType("if", genCodeIf)
 
-NODE_LOOP = NodeType("loop")
-NODE_BREAK = NodeType("break")
-NODE_CONTINUE = NodeType("continue")
+NODE_LOOP = NodeType("loop", genCodeLoop)
+NODE_BREAK = NodeType("break", genCodeBreak)
+NODE_CONTINUE = NodeType("continue", genCodeContinue)
 
