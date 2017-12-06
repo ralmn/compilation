@@ -1,0 +1,1 @@
+{if(!1)out 2;else if (!1)out 3;else out 4;}

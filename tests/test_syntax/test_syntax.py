@@ -20,7 +20,7 @@ class TestSyntax(unittest.TestCase):
         syn = syntax.Syntax(lex, run=False)
         node = syn.P(lex.current())
 
-        self.assertEqual(syntax.nodes_const.NODE_IDENTIFIANT, node.type)
+        self.assertEqual(syntax.nodes_const.NODE_VAR_REF, node.type)
         self.assertEqual("x", node.identifier)
 
     def test_unitary_minus_const(self):
@@ -48,7 +48,7 @@ class TestSyntax(unittest.TestCase):
 
         child = node.children[0]
 
-        self.assertEqual(syntax.nodes_const.NODE_IDENTIFIANT, child.type)
+        self.assertEqual(syntax.nodes_const.NODE_VAR_REF, child.type)
         self.assertEqual('y', child.identifier)
 
     def test_global(self):
@@ -277,12 +277,12 @@ class TestSyntax(unittest.TestCase):
     def test_while(self):
         str = "while(1 + 1) 1 + 3; "
 
-        self.test_generic(str, 10, 10)
+        self.generic(str, 10, 10)
 
         str = "while(1 + 1){ 1 + 3; }"
-        self.test_generic(str, 12, 11)
+        self.generic(str, 12, 11)
 
-    def test_generic(self, str, lexSize, synSize):
+    def generic(self, str, lexSize, synSize):
         lex = lexical.Lexical(str)
         self.assertEqual(lexSize, len(lex))
 
