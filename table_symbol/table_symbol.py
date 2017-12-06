@@ -1,4 +1,4 @@
-from symbol import Symbol
+from Symbol import Symbol
 
 
 class TableSymbol:

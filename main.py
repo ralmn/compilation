@@ -22,7 +22,6 @@ def run(str, skip_print=False):
         print(g.getOutput())
 
 
-
 if __name__ == '__main__':
     try:
         if len(sys.argv) >= 2:

@@ -111,7 +111,7 @@ def genCodeContinue(genCode, node):
 
 
 def genCodeDecl(genCode, node):
-    genCode.linesOut.append("; int %s (decl) (ignoré car géré dans le gencode de fnc)" % node.identifier)
+    genCode.linesOut.append("; int %s (decl) (ignore car gere dans le gencode de fnc)" % node.identifier)
     pass
 
 
