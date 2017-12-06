@@ -15,7 +15,11 @@ class TableSymbol:
         self.stack.pop()
 
     def newSymbol(self, node):
-        node_name = node.identifier
+        return self.newSymbolIdent(node.identifier, node=node)
+
+
+
+    def newSymbolIdent(self, node_name, node=None):
         current_block = self._getCurrentBlock()
         if node_name not in current_block:
             symbol = Symbol(node_name, node)

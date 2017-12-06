@@ -5,7 +5,7 @@ import nodes_const
 from syntax_error import SyntaxError
 
 
-# P = constant | identifiant '(' [ [E,]* E]?  ')' | ( E ) | - P | !P
+# P = constant | ident ('[' E ']')? | identifiant '(' [ [E,]* E]?  ')' | ( E ) | - P | !P | * ident
 
 # F = P * F | P / F | P % F | P
 
@@ -24,7 +24,7 @@ from syntax_error import SyntaxError
 #	| 'int' ident ';'
 #   | break | continue | while | do while | for
 
-# A <- ident '=' E
+# A <- ident ('[' E ']')? '=' E | * ident  '=' E
 
 # D -> int ident '(' [int ident]* ')' S
 
@@ -38,13 +38,23 @@ class Syntax:
         if run:
             self.run()
 
-    def run(self):
-        self.node = self.S(self.lexical.current())
-        if self.node is None:
-            raise SyntaxError("Unexpected statement %s" % str(self.lexical.tokens[0]))
-        self.lexical.nextToken()
-        if not self.lexical.isEnd():
-            raise SyntaxError("Unexpected token %s" % str(self.lexical.nextToken()))
+    def run(self):  # Z
+        # self.node = self.S(self.lexical.current())
+        # if self.node is None:
+        #     raise SyntaxError("Unexpected statement %s" % str(self.lexical.tokens[0]))
+        # self.lexical.nextToken()
+        # if not self.lexical.isEnd():
+        #     raise SyntaxError("Unexpected token %s" % str(self.lexical.nextToken()))
+
+        childrenNodeProg = []
+
+        while not self.lexical.isEnd():
+            node = self.D(self.lexical.current())
+            childrenNodeProg.append(node)
+            self.lexical.nextToken()
+
+        self.node = Node(type=nodes_const.NODE_PROGRAM, children=childrenNodeProg)
+
 
     def P(self, token):
         if token.category == categories_const.TOKEN_VALUE:
@@ -511,11 +521,12 @@ class Syntax:
 
             nextToken = self.lexical.nextToken()
             if nextToken.category != categories_const.TOKEN_COMMA:
+                #nextToken = self.lexical.nextToken()
                 break
 
             nextToken = self.lexical.nextToken()
 
-        nextToken = self.lexical.nextToken()
+
         if nextToken.category != categories_const.TOKEN_PARENTHESIS_CLOSE:
             raise SyntaxError("Function : Missing closing parenthesis (%s) " % str(nextToken))
 
@@ -525,7 +536,7 @@ class Syntax:
         if nodeS is None:
             raise SyntaxError("Function : Missing function body (%s) " % str(nextToken))
 
-        return Node(type=nodes_const.NODE_FUNC, children=[nodeS], params=params)
+        return Node(type=nodes_const.NODE_FUNC, children=[nodeS], params=params, identifier=nextTokenIdent.identifier)
 
 
 

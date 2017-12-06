@@ -111,15 +111,64 @@ def genCodeContinue(genCode, node):
 
 
 def genCodeDecl(genCode, node):
-    genCode.linesOut.append("push.i 999 ; int %s (decl)" % node.identifier)
+    genCode.linesOut.append("; int %s (decl) (ignoré car géré dans le gencode de fnc)" % node.identifier)
+    pass
 
 
 def genCodeAffectation(genCode, node):
     node.children[0].gencode(genCode)
     genCode.linesOut.append("set %s ; %s (affect) " % (node.slot, node.identifier))
 
+
 def genCodeRef(genCode, node):
     genCode.linesOut.append("get %s ; %s (ref)" % (node.slot, node.identifier))
+
+
+def genCodeIndirection(genCode, node):
+    genCode.linesOut.append("get %s ; * %s (pointeur)" % (node.slot, node.identifier))
+    if len(node.children) == 0: #lecture
+        genCode.linesOut.append("read ; * %s (pointeur)" % (node.identifier))
+    else:  #ecriture
+        node.children[0].gencode(genCode)  # E
+        genCode.linesOut.append("write ; * %s = ... (pointeur set)" % (node.identifier))
+
+
+def genCodeIndex(genCode, node):
+    genCode.linesOut.append("get %s ; %s[E] (index)" % (node.slot, node.identifier))
+    node.children[0].gencode(genCode)  # E
+    genCode.linesOut.append("add.i")
+    if len(node.children) == 1:  # lecture
+        genCode.linesOut.append("read ; %s[E] (index)" % (node.identifier))
+    else:
+        node.children[1].gencode(genCode)  # E
+        genCode.linesOut.append("write ; %s[E0] = E1 (index set)" % (node.identifier))
+
+
+def genCodeFunction(genCode, node):
+    genCode.linesOut.append("; Start function %s " % node.identifier)
+
+    genCode.linesOut.append(".%s" % node.identifier)
+
+    for i in range(node.nbLocal):
+        genCode.linesOut.append("push.i 9999 ; variable local")  # Utile ?
+
+    node.children[0].gencode(genCode)
+
+    genCode.linesOut.append("push.i 0 ; dans le cas ou on a pas de return")
+    genCode.linesOut.append("ret")
+    genCode.linesOut.append("; fin function %s " % node.identifier)
+
+
+def genCodeProgram(genCode, node):
+
+    for child in node.children:
+        child.gencode(genCode)
+
+    genCode.linesOut.append(".start")
+    genCode.linesOut.append("prep main")
+    genCode.linesOut.append("call 0")
+
+    genCode.linesOut.append("halt")
 
 NODE_CONSTANT = NodeType("constant", genCodeConst)
 NODE_IDENTIFIANT = NodeType("identifiant")
@@ -162,4 +211,10 @@ NODE_LOOP = NodeType("loop", genCodeLoop)
 NODE_BREAK = NodeType("break", genCodeBreak)
 NODE_CONTINUE = NodeType("continue", genCodeContinue)
 
-NODE_FUNC = NodeType("function")
+
+NODE_FUNC = NodeType("function", genCodeFunction)
+
+NODE_INDIRECTION = NodeType("indirection", genCodeIndirection)  # * ident -> (pointeur)
+NODE_INDEX = NodeType('index', genCodeIndex)  # ident [ E ]
+
+NODE_PROGRAM = NodeType("program", genCodeProgram)

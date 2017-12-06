@@ -7,11 +7,11 @@ class CodeGenerator:
 
 
     def run(self):
-        self.linesOut.append(".start")
+        # self.linesOut.append(".start")
 
         self.node.gencode(self)
 
-        self.linesOut.append("halt")
+        # self.linesOut.append("halt")
 
     def getOutput(self):
         return '\n'.join(self.linesOut)
