@@ -1,13 +1,8 @@
-int zzz(int a) {
-    int b;
+int testDisp(int a) {
     out a;
 }
 
 int main(){
-
-    int k;
-    k = 3;
-    k = k + 5;
-    out k;
-
+    testDisp(2);
+    out 2;
 }

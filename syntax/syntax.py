@@ -55,14 +55,39 @@ class Syntax:
 
         self.node = Node(type=nodes_const.NODE_PROGRAM, children=childrenNodeProg)
 
-
     def P(self, token):
         if token.category == categories_const.TOKEN_VALUE:
             self.size += 1
             return Node(nodes_const.NODE_CONSTANT, value=token.value)
+
         if token.category == categories_const.TOKEN_IDENT:
             self.size += 1
-            return Node(nodes_const.NODE_VAR_REF, identifier=token.identifier)
+
+            next_token = self.lexical.nextToken()
+            if next_token is None:
+                raise SyntaxError('Identifier with nothing after, (token: %s)' % (str(token)))
+
+            if next_token.category == categories_const.TOKEN_PARENTHESIS_OPEN:
+                list_param = []
+
+                while not self.lexical.isEnd():
+                    next_token = self.lexical.nextToken()
+                    if next_token is None:
+                        raise SyntaxError('function called but argument are not finished, (token: %s)' % (str(token)))
+                    if next_token.category == categories_const.TOKEN_PARENTHESIS_CLOSE:
+                        return Node(nodes_const.NODE_FUNC_CALL, identifier=token.identifier, children=list_param)
+
+                    next_node = self.P(next_token)
+                    if next_node is None:
+                        raise SyntaxError('Function called but parametter is not valid, (token: %s)' % (str(next_token)))
+
+                    list_param.append(next_node)
+
+                    # we don't return => return None at end of function
+
+            else:
+                self.lexical.undo()
+                return Node(nodes_const.NODE_VAR_REF, identifier=token.identifier)
 
         if token.category == categories_const.TOKEN_PARENTHESIS_OPEN:
             node = self.E(self.lexical.nextToken())

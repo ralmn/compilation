@@ -159,6 +159,12 @@ def genCodeFunction(genCode, node):
     genCode.linesOut.append("; fin function %s " % node.identifier)
 
 
+def genCodeFunctionCall(genCode, node):
+    genCode.linesOut.append("prep %s" % node.identifier)
+    for child in node.children:
+        child.gencode(genCode)
+    genCode.linesOut.append("call %s" % len(node.children))
+
 def genCodeProgram(genCode, node):
 
     for child in node.children:
@@ -213,6 +219,7 @@ NODE_CONTINUE = NodeType("continue", genCodeContinue)
 
 
 NODE_FUNC = NodeType("function", genCodeFunction)
+NODE_FUNC_CALL = NodeType("function call", genCodeFunctionCall)
 
 NODE_INDIRECTION = NodeType("indirection", genCodeIndirection)  # * ident -> (pointeur)
 NODE_INDEX = NodeType('index', genCodeIndex)  # ident [ E ]
