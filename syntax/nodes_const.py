@@ -176,6 +176,13 @@ def genCodeProgram(genCode, node):
 
     genCode.linesOut.append("halt")
 
+
+def genCodeReturn(genCode, node):
+    if len(node.children) > 0:
+        node.children[0].gencode(genCode)
+    genCode.linesOut.append("ret")
+
+
 NODE_CONSTANT = NodeType("constant", genCodeConst)
 NODE_IDENTIFIANT = NodeType("identifiant")
 
@@ -223,5 +230,7 @@ NODE_FUNC_CALL = NodeType("function call", genCodeFunctionCall)
 
 NODE_INDIRECTION = NodeType("indirection", genCodeIndirection)  # * ident -> (pointeur)
 NODE_INDEX = NodeType('index', genCodeIndex)  # ident [ E ]
+
+NODE_RETURN = NodeType('return', genCodeReturn)
 
 NODE_PROGRAM = NodeType("program", genCodeProgram)

@@ -1,8 +1,12 @@
 int testDisp(int a) {
-    out a;
+    if (a < 6){
+        return 1;
+    }else {
+        return 0;
+    }
 }
 
 int main(){
-    testDisp(2);
-    out 2;
+    out testDisp(5);
+    out testDisp(10);
 }

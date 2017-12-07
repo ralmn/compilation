@@ -22,7 +22,7 @@ from syntax_error import SyntaxError
 #	| E ';'
 #	| 'if' '(' E ')' S (else S )?
 #	| 'int' ident ';'
-#   | break | continue | while | do while | for
+#   | break | continue | return | while | do while | for
 
 # A <- ident ('[' E ']')? '=' E | * ident  '=' E
 
@@ -75,6 +75,7 @@ class Syntax:
                     if next_token is None:
                         raise SyntaxError('function called but argument are not finished, (token: %s)' % (str(token)))
                     if next_token.category == categories_const.TOKEN_PARENTHESIS_CLOSE:
+                        self.size += 1
                         return Node(nodes_const.NODE_FUNC_CALL, identifier=token.identifier, children=list_param)
 
                     next_node = self.P(next_token)
@@ -476,6 +477,32 @@ class Syntax:
             return Node(nodes_const.NODE_CONTINUE)
 
         # fin gestion continue
+
+        # debut gestion return
+
+        if token.category == categories_const.TOKEN_RETURN:
+
+            nextToken = self.lexical.nextToken()
+            if nextToken is None:
+                raise SyntaxError("return: Missing return value (%s)" % token)
+
+            children = []
+
+            # With return value
+            if nextToken.category != categories_const.TOKEN_SEMICOLON:
+                nodeE = self.E(nextToken)
+                if nodeE is None:
+                    raise SyntaxError("return: Invalid return value (%s) " % token)
+                children.append(nodeE)
+                nextToken = self.lexical.nextToken()
+
+            if nextToken.category != categories_const.TOKEN_SEMICOLON:
+                raise SyntaxError("return: Missing semicolon (%s)" % token)
+
+            self.size += 1
+            return Node(nodes_const.NODE_RETURN, children=children)
+
+        # fin gestion return
 
         # debut gestion declaration
 
