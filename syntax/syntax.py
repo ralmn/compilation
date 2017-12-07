@@ -3,6 +3,7 @@ from lexical import categories_const
 from node import Node
 import nodes_const
 from syntax_error import SyntaxError
+import pydot, os
 
 
 # P = constant | ident ('[' E ']')? | identifiant '(' [ [E,]* E]?  ')' | ( E ) | - P | !P | * ident
@@ -450,7 +451,7 @@ class Syntax:
             if nodeS is None:
                 raise SyntaxError('WHILE : Missing statement (%s) ' % str(token))
 
-            self.size += 3 # loop + if + ?????BREAK POURQUOI ON LA PAS ?
+            self.size += 3
             nodeIf = Node(nodes_const.NODE_IF, children=[nodeCondition, nodeS, Node(nodes_const.NODE_BREAK)])
             arrayIf = []
             arrayIf.append(nodeIf)
@@ -459,6 +460,133 @@ class Syntax:
             return Node(nodes_const.NODE_LOOP, children=[nodeIf])
 
         # fin gestion WHILE
+
+
+        # debut gestion DO-WHILE
+
+        if token.category == categories_const.TOKEN_DO:
+            nextToken = self.lexical.nextToken()
+
+            if nextToken is None:
+                raise SyntaxError('DO-WHILE : not finished statement (%s)' % str(token))
+
+
+            nodeS = self.S(nextToken)
+
+            if nodeS is None:
+                raise SyntaxError('DO-WHILE : invalid block (%s)' % str(token))
+
+            nextToken = self.lexical.nextToken()
+            if nextToken.category != categories_const.TOKEN_WHILE:
+                raise SyntaxError('DO-WHILE : Missing While (%s)' % str(token))
+
+            nextToken = self.lexical.nextToken()
+            if nextToken.category != categories_const.TOKEN_PARENTHESIS_OPEN:
+                raise SyntaxError('DO-WHILE : Missing opening parenthesis for condition (%s)' % str(token))
+
+            # self.lexical.undo()
+
+            nodeCondition = self.E(nextToken)
+
+            if nodeCondition is None:
+                raise SyntaxError('DO-WHILE : Missing condition (%s) ' % str(token))
+
+
+            self.size += 5
+            nodeIf = Node(nodes_const.NODE_IF, children=[nodeCondition, Node(nodes_const.NODE_CONTINUE), Node(nodes_const.NODE_BREAK)])
+            arrayIf = []
+            arrayIf.append(nodeIf)
+
+            nodeBlock = Node(nodes_const.NODE_BLOCK, children=[nodeS, nodeIf])
+            nodeLoop = Node(nodes_const.NODE_LOOP, children=[nodeBlock])
+            return nodeLoop
+
+        # fin gestion DO-WHILE
+
+        # debut gestion for
+
+        if token.category == categories_const.TOKEN_FOR:
+            nextToken = self.lexical.nextToken()
+
+            if nextToken is None:
+                raise SyntaxError('FOR : not finished statement (%s)' % str(token))
+
+            if nextToken.category != categories_const.TOKEN_PARENTHESIS_OPEN:
+                raise SyntaxError('FOR : Missing opening parenthesis for params (%s)' % str(token))
+
+            # self.lexical.undo()
+
+            # AFFECTATION
+
+            nextToken = self.lexical.nextToken()
+            if nextToken is None:
+                raise SyntaxError('FOR : Missing init affectation statement (%s)' % str(token))
+
+            nodeAffectation = self.A(nextToken)
+            if nodeAffectation is None:
+                raise SyntaxError('FOR : invalid init affectation statement (%s) ' % str(token))
+
+            # FIN AFFECTATION
+
+            nextToken = self.lexical.nextToken()
+            if nextToken is None or nextToken.category != categories_const.TOKEN_SEMICOLON:
+                raise SyntaxError('FOR : Missing semicolon betweet affectation and condition statement (%s)' % str(token))
+
+            # Condition
+
+            nextToken = self.lexical.nextToken()
+            if nextToken is None:
+                raise SyntaxError('FOR : Missing init condition statement (%s)' % str(token))
+
+            nodeCondition = self.E(nextToken)
+            if nodeCondition is None:
+                raise SyntaxError('FOR : invalid init condition statement (%s) ' % str(token))
+
+            # Fin condtion
+
+            nextToken = self.lexical.nextToken()
+            if nextToken is None or nextToken.category != categories_const.TOKEN_SEMICOLON:
+                raise SyntaxError(
+                    'FOR : Missing semicolon betweet condition and incrementation statement (%s)' % str(token))
+
+            # Incrementation
+
+            nextToken = self.lexical.nextToken()
+            if nextToken is None:
+                raise SyntaxError('FOR : Missing init incrementation statement (%s)' % str(token))
+
+            nodeIncrementation = self.A(nextToken)
+            if nodeIncrementation is None:
+                raise SyntaxError('FOR : invalid init incrementation statement (%s) ' % str(token))
+
+            #fin incrementation
+
+            nextToken = self.lexical.nextToken()
+            if nextToken is None:
+                raise SyntaxError('FOR : not finished statement (%s)' % str(token))
+
+            if nextToken.category != categories_const.TOKEN_PARENTHESIS_CLOSE:
+                raise SyntaxError('FOR : Missing closing parenthesis for params (%s)' % str(token))
+
+            nextToken = self.lexical.nextToken()
+
+            if nextToken is None:
+                raise SyntaxError('FOR : missing block (%s)' % str(token))
+            nodeS = self.S(nextToken)
+            if nodeS is None:
+                raise SyntaxError('FOR : invalid block (%s)' % str(token))
+
+            self.size += 4
+
+            #nodeS.children.append(nodeIncrementation)
+
+            nodeIf = Node(nodes_const.NODE_IF, children=[nodeCondition, nodeS, Node(nodes_const.NODE_BREAK)])
+            nodeLoop = Node(nodes_const.NODE_LOOP, children=[nodeIncrementation, nodeIf])
+            nodeBlock = Node(nodes_const.NODE_BLOCK, children=[nodeAffectation, nodeLoop])
+
+            return nodeBlock
+
+        # fin gestion for
 
         #debut gestion break
 
@@ -594,3 +722,33 @@ class Syntax:
 
 
 
+    def draw(self):
+        graph = pydot.Dot()
+        self.draw_node(graph, self.node)
+        graph.write_png("tree.png") # , prog="./dot/bin/dot"
+        #os.startfile(os.path.join(os.getcwd(), "tree.png"))
+
+
+    @staticmethod
+    def draw_node(graph, node):
+        node_display = 'None'
+        if node is not None:
+            if node.type == nodes_const.NODE_CONSTANT:
+                node_display = node.value
+            elif node.type == nodes_const.NODE_PROGRAM:
+                node_display = "Start"
+            elif node.type == nodes_const.NODE_VAR_DECL:
+                node_display = "decl {}".format(node.identifier)
+            elif node.type == nodes_const.NODE_VAR_REF:
+                node_display = node.identifier
+            else:
+                node_display = node.type.name
+
+        pydot_node = pydot.Node("{}".format(hash(node)), label=node_display)
+        graph.add_node(pydot_node)
+        if node is None:
+            return pydot_node
+        for child in node.children:
+            pydot_child = Syntax.draw_node(graph, child)
+            graph.add_edge(pydot.Edge(pydot_node, pydot_child))
+        return pydot_node

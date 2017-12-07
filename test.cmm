@@ -1,12 +1,10 @@
-int testDisp(int a) {
-    if (a < 6){
-        return 1;
-    }else {
-        return 0;
-    }
+int main(){
+    int i;
+    i = 0;
+    do {
+        out i;
+        i = i + 1;
+        continue;
+    } while (i < 10)
 }
 
-int main(){
-    out testDisp(5);
-    out testDisp(10);
-}

@@ -18,7 +18,7 @@ class Semantic:
         if node.type == syntax.nodes_const.NODE_BLOCK:
             self.tableSymbol.startBlock()
             for child in node.children:
-                self.analyseSemntique(child)
+                self.semSymbol(child)
             self.tableSymbol.endBlock()
 
         elif node.type == syntax.nodes_const.NODE_VAR_DECL:
@@ -31,11 +31,11 @@ class Semantic:
             symbol = self.tableSymbol.getSymbol(node)
             node.slot = symbol.slot
             for child in node.children:
-                self.analyseSemntique(child)
+                self.semSymbol(child)
 
         else:
             for child in node.children:
-                self.analyseSemntique(child)
+                self.semSymbol(child)
 
     def semLoop(self, node):
         if node.type == nodes_const.NODE_LOOP:

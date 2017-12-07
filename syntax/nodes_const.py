@@ -78,23 +78,28 @@ def genCodeLoop(genCode, node):
     lStart = genLabel()
     lEnd = genLabel()
 
-    genCode.linesOut.append("; debut while")
+    genCode.linesOut.append("; debut boucle")
+
+
+    l3 = None
+    if(len(node.children) > 1):
+        genCode.linesOut.append("; it is a for loop")
+        l3 = genLabel()
+        genCode.linesOut.append("jump %s ; skip first affect" % l3)
+
     genCode.linesOut.append(".%s" % lStart)
 
-    nodeIf = node.children[0]
+    node.children[0].gencode(genCode)
 
-    E = nodeIf.children[0]
-    S = nodeIf.children[1]
+    if (len(node.children) > 1):
+        genCode.linesOut.append(".%s" % l3)
+        node.children[1].gencode(genCode)
 
-    E.gencode(genCode)
-    genCode.linesOut.append("jumpf %s" % lEnd)
-
-    S.gencode(genCode)
     genCode.linesOut.append("jump %s" % lStart)
 
     genCode.linesOut.append(".%s" % lEnd)
 
-    genCode.linesOut.append("; fin while")
+    genCode.linesOut.append("; fin boucle")
 
     lEnd = labelStack.pop()
     lStart = labelStack.pop()

@@ -10,7 +10,10 @@ def run(str, skip_print=False):
 
     lex = lexical.Lexical(str)
 
-    node = syntax.Syntax(lex).node
+    syn = syntax.Syntax(lex)
+    node = syn.node
+
+    syn.draw()
 
     sem = semantic.Semantic(tableSymbol)
     sem.run(node)
