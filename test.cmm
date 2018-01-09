@@ -1,7 +1,7 @@
-int main(){
+int zz(){
     int z;
     int a;
-    * a = 1;
-    z = * a;
+    a[55] = 99;
+    z = a[77];
 
 }

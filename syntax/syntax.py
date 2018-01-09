@@ -68,6 +68,22 @@ class Syntax:
             if next_token is None:
                 raise SyntaxError('Identifier with nothing after, (token: %s)' % (str(token)))
 
+            if next_token.category == categories_const.TOKEN_SQUARE_BRACKET_OPEN:
+                next_token = self.lexical.nextToken()
+
+                nodeE = self.E(next_token)
+
+                if nodeE is None:
+                    raise SyntaxError("Index read : Invalid expression (%s)" % token)
+
+                next_token = self.lexical.nextToken()
+                if next_token.category != categories_const.TOKEN_SQUARE_BRACKET_CLOSE:
+                    raise SyntaxError("Index read : Missing closing bracket (%s)" % token)
+
+                self.size += 1
+                return Node(nodes_const.NODE_INDEX, [nodeE], identifier=token.identifier)
+
+
             if next_token.category == categories_const.TOKEN_PARENTHESIS_OPEN:
                 list_param = []
 
@@ -703,9 +719,44 @@ class Syntax:
 
         tokenIden = token
 
-        tokenEquals = self.lexical.nextToken()
+        nextToken = self.lexical.nextToken()
 
-        if tokenEquals.category != categories_const.TOKEN_AFFECT:
+        # if [ E ] -> index
+
+        if nextToken.category == categories_const.TOKEN_SQUARE_BRACKET_OPEN:
+            #on doit etre en index
+
+            nextToken = self.lexical.nextToken()
+
+            nodeE = self.E(nextToken)
+
+            if nodeE is None:
+                raise SyntaxError("Index : Missing expression (%s)" % str(token))
+
+            nextToken = self.lexical.nextToken()
+            if nextToken.category != categories_const.TOKEN_SQUARE_BRACKET_CLOSE:
+                raise SyntaxError("Index : Missing closing square bracket (%s)" % str(token))
+
+            nextToken = self.lexical.nextToken()
+
+            if nextToken.category != categories_const.TOKEN_AFFECT:
+                raise SyntaxError("Index : Missing Affectation (%s)" % str(token))
+
+            tokenExpression = self.lexical.nextToken()
+
+            if tokenExpression is None:
+                raise SyntaxError("Index : Missing expression after equals (%s) " % str(token))
+
+            nodeAfterExpression = self.E(tokenExpression)
+
+            if nodeAfterExpression is None:
+                raise SyntaxError("Index : incorrect expression after equals (%s) " % str(token))
+
+            self.size += 1
+            return Node(nodes_const.NODE_INDEX, [nodeE, nodeAfterExpression], identifier=tokenIden.identifier)
+
+
+        if nextToken.category != categories_const.TOKEN_AFFECT:
             self.lexical.undo()
             return None
 
