@@ -114,6 +114,18 @@ class Syntax:
 
             self.size += 1
             return Node(nodes_const.NODE_NOT, [node])
+
+        if token.category == categories_const.TOKEN_MULTIPLICATION:
+            node = self.P(self.lexical.nextToken())
+
+            if node is None:
+                raise SyntaxError('NOT : 2nd part missing, (token: %s)' % str(token))
+
+            self.size += 1
+            return Node(nodes_const.NODE_INDIRECTION, [], identifier=node.identifier)
+
+
+
         return None
 
     def F(self, token):
@@ -640,6 +652,10 @@ class Syntax:
 
             if nextToken is None:
                 raise SyntaxError('DECLARATION : incomplete statement (%s)' % str(token))
+            #
+            # if nextToken.category == categories_const.TOKEN_MULTIPLICATION:
+            #     nodeP = self.P(nextToken)
+            #     return nodeP
 
             if nextToken.category != categories_const.TOKEN_IDENT:
                 raise SyntaxError('DECLARATION : Missing identifier (%s)' % str(token))
@@ -655,6 +671,35 @@ class Syntax:
         # fin gestion declaration
 
     def A(self, token):
+
+        # c'est un pointeur
+        if token.category == categories_const.TOKEN_MULTIPLICATION:
+            tokenPtn = token
+            tokenIdent = self.lexical.nextToken()
+
+            if tokenIdent.category != categories_const.TOKEN_IDENT:
+                raise SyntaxError("Pointeur : missing identifier (%s)" % str(tokenPtn))
+
+            nextToken = self.lexical.nextToken()
+
+            if nextToken.category == categories_const.TOKEN_SEMICOLON:
+                self.lexical.undo(tokenPtn)
+                return None
+
+            if nextToken.category != categories_const.TOKEN_AFFECT:
+                raise SyntaxError("Pointeur : missing equals (%s)" % str(tokenPtn))
+
+            #nextToken = self.lexical.nextToken()
+
+            nodeE = self.E(self.lexical.nextToken())
+
+            if nodeE is None:
+                raise SyntaxError("Pointeur : Missing expression (%s)" % str(tokenPtn))
+
+            self.size += 1
+            return Node(nodes_const.NODE_INDIRECTION, [nodeE], identifier=tokenIdent.identifier)
+
+
 
         tokenIden = token
 
