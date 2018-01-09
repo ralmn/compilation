@@ -31,9 +31,9 @@ if __name__ == '__main__':
             file = open(sys.argv[1], 'r')
             lines = file.readlines()
 
-            run('\n'.join(lines))
+            run(''.join(lines))
         else:
-            run('\n'.join(sys.stdin))
+            run(''.join(sys.stdin))
     except IOError as e:
         print("File error :", e, file=sys.stderr)
     except syntax.SyntaxError as e:
