@@ -342,7 +342,7 @@ class Syntax:
 
                 if nodeS is not None:
                     nodesBlockChildren.append(nodeS)
-                    nextToken = self.lexical.nextToken()
+                nextToken = self.lexical.nextToken()
 
             if nextToken is None:
                 raise SyntaxError('Block : Bracket not closed.(%s) ' % str(token))
