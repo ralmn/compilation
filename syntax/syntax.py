@@ -438,7 +438,7 @@ class Syntax:
 
             tokenElse = self.lexical.nextToken()
             if tokenElse is None or tokenElse.category != categories_const.TOKEN_ELSE:
-                #self.lexical.undo()
+                self.lexical.undo()
                 self.size += 1
                 return Node(nodes_const.NODE_IF, [nodeCondition, nodeS1])
 
