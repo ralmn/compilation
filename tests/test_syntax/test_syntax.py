@@ -6,7 +6,7 @@ import lexical
 
 class TestSyntax(unittest.TestCase):
     def test_constant(self):
-        str = "3"
+        str = " 3 "
         lex = lexical.Lexical(str)
         syn = syntax.Syntax(lex, run=False)
         node = syn.P(lex.current())
@@ -15,7 +15,7 @@ class TestSyntax(unittest.TestCase):
         self.assertEqual(3, node.value)
 
     def test_variable(self):
-        str = "x"
+        str = "x;"
         lex = lexical.Lexical(str)
         syn = syntax.Syntax(lex, run=False)
         node = syn.P(lex.current())
@@ -38,7 +38,7 @@ class TestSyntax(unittest.TestCase):
         self.assertEqual(4, child.value)
 
     def test_unitary_minus_ident(self):
-        str = "-y"
+        str = "-y;"
         lex = lexical.Lexical(str)
         syn = syntax.Syntax(lex, run=False)
         node = syn.P(lex.current())
@@ -52,42 +52,42 @@ class TestSyntax(unittest.TestCase):
         self.assertEqual('y', child.identifier)
 
     def test_global(self):
-        str = "3 + x * 2 * -z;"
+        str = "int main() { 3 + x * 2 * -z; }"
         lex = lexical.Lexical(str)
 
-        # self.assertEqual(8, len(lex))
+        # self.assertEqual(8 + 6, len(lex))
 
         syn = syntax.Syntax(lex)
 
-        self.assertEqual(9, syn.size)
+        self.assertEqual(9 + 1, syn.size)
 
     def test_not(self):
-        str = "!3;"
+        str = "int main() { !3; }"
         lex = lexical.Lexical(str)
 
-        # self.assertEqual(8, len(lex))
+        # self.assertEqual(8 + 6, len(lex))
 
         syn = syntax.Syntax(lex)
 
-        self.assertEqual(3, syn.size)
+        self.assertEqual(3 + 1, syn.size)
 
-        str = "!!3;"
+        str = "int main() { !!3; }"
         lex = lexical.Lexical(str)
 
-        # self.assertEqual(8, len(lex))
+        # self.assertEqual(8 + 6, len(lex))
 
         syn = syntax.Syntax(lex)
 
-        self.assertEqual(4, syn.size)
+        self.assertEqual(4 + 1, syn.size)
 
-        str = "!(!1 + 2);"
+        str = "int main() { !(!1 + 2); }"
         lex = lexical.Lexical(str)
 
-        # self.assertEqual(8, len(lex))
+        # self.assertEqual(8 + 6, len(lex))
 
         syn = syntax.Syntax(lex)
 
-        self.assertEqual(6, syn.size)
+        self.assertEqual(6 + 1, syn.size)
 
     def test_cond(self):
 
@@ -95,37 +95,38 @@ class TestSyntax(unittest.TestCase):
 
         for tok in token_cond:
             print tok
-            str = "3 %s 1;" % tok
+            str = "int main() { 3 %s 1; }" % tok
             lex = lexical.Lexical(str)
 
             print(', '.join([t.category.name for t in lex.tokens]))
-            self.assertEqual(4, len(lex))
+            self.assertEqual(4 + 6, len(lex))
 
             syn = syntax.Syntax(lex)
 
-            self.assertEqual(4, syn.size)
+            self.assertEqual(4 + 1, syn.size)
 
     def test_statement_equals(self):
 
-        str = "3 == 1;"
+        str = "int main() { 3 == 1; }"
         lex = lexical.Lexical(str)
 
         print(', '.join([t.category.name for t in lex.tokens]))
-        self.assertEqual(4, len(lex))
+        self.assertEqual(4 + 6, len(lex))
 
         syn = syntax.Syntax(lex)
 
-        self.assertEqual(4, syn.size)
+        self.assertEqual(4 + 1, syn.size)
+
 
 
     def test_cond_e(self):
 
 
-            str = "3 == 1"
+            str = "3 == 1;"
             lex = lexical.Lexical(str)
 
             print(', '.join([t.category.name for t in lex.tokens]))
-            self.assertEqual(3, len(lex))
+            self.assertEqual(4, len(lex))
 
             syn = syntax.Syntax(lex, run=False)
             syn.E(lex.current())
@@ -134,46 +135,46 @@ class TestSyntax(unittest.TestCase):
 
 
     def test_error(self):
-        str = "3 * (2 + 4) * 1 ("
+        str = "int main() { 3 * (2 + 4) * 1 ( }"
         lex = lexical.Lexical(str)
 
-        self.assertEqual(10, len(lex))
+        self.assertEqual(10 + 6, len(lex))
 
         with self.assertRaises(syntax.SyntaxError) as e:
             syntax.Syntax(lex)
         print(e.exception)
 
-        str = "3 * (2 + 4) * 1 1"
+        str = "int main() { 3 * (2 + 4) * 1 1 }"
         lex = lexical.Lexical(str)
 
-        self.assertEqual(10, len(lex))
+        self.assertEqual(10 + 6, len(lex))
 
         with self.assertRaises(syntax.SyntaxError) as e:
             syntax.Syntax(lex)
         print(e.exception)
 
-        str = "3 * (2 + 4) * 1 *"
+        str = "int main() { 3 * (2 + 4) * 1 * }"
         lex = lexical.Lexical(str)
 
-        self.assertEqual(10, len(lex))
+        self.assertEqual(10 + 6, len(lex))
 
         with self.assertRaises(syntax.SyntaxError) as e:
             syntax.Syntax(lex)
         print(e.exception)
 
-        str = "3 * (2 + 4) * 1 )"
+        str = "int main() { 3 * (2 + 4) * 1 ) }"
         lex = lexical.Lexical(str)
 
-        self.assertEqual(10, len(lex))
+        self.assertEqual(10 + 6, len(lex))
 
         with self.assertRaises(syntax.SyntaxError) as e:
             syntax.Syntax(lex)
         print(e.exception)
 
-        str = "3 * (2 + 4) * 1 -"
+        str = "int main() { 3 * (2 + 4) * 1 - }"
         lex = lexical.Lexical(str)
 
-        self.assertEqual(10, len(lex))
+        self.assertEqual(10 + 6, len(lex))
 
         with self.assertRaises(syntax.SyntaxError) as e:
             syntax.Syntax(lex)
@@ -182,62 +183,62 @@ class TestSyntax(unittest.TestCase):
 
     def test_block(self):
 
-        str = '{ 3 + 3; 2 +2; }'
+        str = 'int main() { { 3 + 3; 2 +2; } }'
 
         lex = lexical.Lexical(str)
 
-        self.assertEqual(10, len(lex))
+        self.assertEqual(10 + 6, len(lex))
 
         syn = syntax.Syntax(lex)
 
-        self.assertEqual(9, syn.size)
+        self.assertEqual(9 + 1, syn.size)
 
 
     def test_if(self):
-        str = "if (3 == 2) { 2 + 1; 4 + 3; }"
+        str = "int main() { if (3 == 2) { 2 + 1; 4 + 3; } }"
 
 
         lex = lexical.Lexical(str)
 
-        self.assertEqual(16, len(lex))
+        self.assertEqual(16 + 6, len(lex))
 
         syn = syntax.Syntax(lex)
 
-        self.assertEqual(13, syn.size)
+        self.assertEqual(13 + 1, syn.size)
 
     def test_if_else(self):
-        str = "if (3 == 2) { 2 + 1; 4 + 3; } else { 3 + 5; }"
+        str = "int main() { if (3 == 2) { 2 + 1; 4 + 3; } else { 3 + 5; } }"
 
         lex = lexical.Lexical(str)
 
-        self.assertEqual(23, len(lex))
+        self.assertEqual(23 + 6, len(lex))
 
         syn = syntax.Syntax(lex)
 
-        self.assertEqual(18, syn.size)
+        self.assertEqual(18 + 1, syn.size)
 
     def test_declaration(self):
-        str = "int a;"
+        str = "int main() { int a; }"
 
         lex = lexical.Lexical(str)
 
-        self.assertEqual(3, len(lex))
+        self.assertEqual(3 + 6, len(lex))
 
         syn = syntax.Syntax(lex)
 
-        self.assertEqual(1, syn.size)
+        self.assertEqual(1 + 1, syn.size)
 
 
     def test_affectation(self):
-        str = "a = 10 + 2;"
+        str = "int main() { a = 10 + 2; }"
 
         lex = lexical.Lexical(str)
 
-        self.assertEqual(6, len(lex))
+        self.assertEqual(6 + 6, len(lex))
 
         syn = syntax.Syntax(lex)
 
-        self.assertEqual(4, syn.size)
+        self.assertEqual(4 + 1, syn.size)
 
 
     def test_if_malformated(self):
@@ -253,42 +254,42 @@ class TestSyntax(unittest.TestCase):
         print(e.exception)
 
     def test_out(self):
-        str = "out 2;"
+        str = "int main() { out 2; }"
 
         lex = lexical.Lexical(str)
 
-        self.assertEqual(3, len(lex))
+        self.assertEqual(3 + 6, len(lex))
 
         syn = syntax.Syntax(lex)
 
-        self.assertEqual(2, syn.size)
+        self.assertEqual(2 + 1, syn.size)
 
     def test_out_addition(self):
-        str = "out 2 + 1;"
+        str = "int main() { out 2 + 1; }"
 
         lex = lexical.Lexical(str)
 
-        self.assertEqual(5, len(lex))
+        self.assertEqual(5 + 6, len(lex))
 
         syn = syntax.Syntax(lex)
 
-        self.assertEqual(4, syn.size)
+        self.assertEqual(4 + 1, syn.size)
 
     def test_while(self):
-        str = "while(1 + 1) 1 + 3; "
+        str = "int main() { while(1 + 1) 1 + 3;  }"
 
         self.generic(str, 10, 10)
 
-        str = "while(1 + 1){ 1 + 3; }"
+        str = "int main() { while(1 + 1){ 1 + 3; } }"
         self.generic(str, 12, 11)
 
     def generic(self, str, lexSize, synSize):
         lex = lexical.Lexical(str)
-        self.assertEqual(lexSize, len(lex))
+        self.assertEqual(lexSize + 6, len(lex))
 
         syn = syntax.Syntax(lex)
         print(syn.node)
-        self.assertEqual(synSize, syn.size)
+        self.assertEqual(synSize + 1, syn.size)
 
 if __name__ == '__main__':
     unittest.main()
