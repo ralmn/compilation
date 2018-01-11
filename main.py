@@ -4,7 +4,7 @@ import sys
 import lexical, syntax, gencode, optimisator, table_symbol, semantic
 
 
-def run(str, skip_print=False):
+def run(str, skip_print=False, out=sys.stdout):
 
     tableSymbol = table_symbol.TableSymbol()
 
@@ -22,7 +22,7 @@ def run(str, skip_print=False):
     node = optimisator.Optimisator(node).node
     g = gencode.CodeGenerator(node)
     if not skip_print:
-        print(g.getOutput())
+        print(g.getOutput(), file=out)
 
 
 if __name__ == '__main__':
