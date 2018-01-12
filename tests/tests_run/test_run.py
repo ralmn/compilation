@@ -14,11 +14,11 @@ import syntax
 
 
 class TestRun(unittest.TestCase):
+
     def test_compile(self):
 
         dir_path = os.path.dirname(os.path.realpath(__file__))
-        for dirname, dirnames, filenames in os.walk(dir_path+'/../../tests_prog/pass'):
-            #print(dirname, dirnames, filenames)
+        for dirname, dirnames, filenames in os.walk(os.path.join(dir_path, '../../tests_prog/pass')):
             for file in filenames:
                 if '.txt' in file:
                     p = os.path.join(dirname, file)
@@ -27,8 +27,8 @@ class TestRun(unittest.TestCase):
     def test_exec(self):
 
         dir_path = os.path.dirname(os.path.realpath(__file__))
-        for dirname, dirnames, filenames in os.walk(dir_path+'/../../tests_prog/pass'):
-            #print(dirname, dirnames, filenames)
+        for dirname, dirnames, filenames in os.walk(os.path.join(dir_path, '../../tests_prog/pass')):
+
             for file in filenames:
                 if '.txt' in file:
                     p = os.path.join(dirname, file)
@@ -36,7 +36,7 @@ class TestRun(unittest.TestCase):
                     file = open(pathOut, 'r')
                     lines = file.readlines()
 
-                    process = subprocess.Popen('/Users/ralmn/Developement/cours/compilation/compilation/MSM/MSM',
+                    process = subprocess.Popen(os.path.join(dir_path, '../../MSM/msm'),
                                            stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
                     self.runFile(p, out=process.stdin, skip_print=False)
@@ -44,7 +44,9 @@ class TestRun(unittest.TestCase):
 
                     process.stdin.close()
                     rc = process.wait()
-                    print('rc', rc)
+                    #print('rc', rc)
+
+                    assert rc == 0
 
                     linesOut = []
 
