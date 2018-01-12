@@ -2,7 +2,7 @@ import tokenizer
 
 
 class Lexical:
-    def __init__(self, input_str, nbLineRuntime):
+    def __init__(self, input_str, nbLineRuntime=0):
         self.tokens = tokenizer.tokenize(input_str, nbLineRuntime)
         self.index = 0
         self.nbLineRuntime = nbLineRuntime

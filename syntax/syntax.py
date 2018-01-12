@@ -99,7 +99,7 @@ class Syntax:
                         self.size += 1
                         return Node(nodes_const.NODE_FUNC_CALL, identifier=token.identifier, children=list_param)
 
-                    next_node = self.P(next_token)
+                    next_node = self.E(next_token)
                     if next_node is None:
                         raise SyntaxError('Function called but parametter is not valid, (token: %s)' % (str(next_token)))
 

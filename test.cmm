@@ -1,6 +1,9 @@
-int main(){
-    fnt(10);
-}
 
 int fnt(int a) {
+}
+
+int main(){
+    int a;
+    a / 10;
+    fnt(a/10);
 }

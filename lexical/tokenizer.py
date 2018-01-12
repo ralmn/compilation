@@ -2,7 +2,7 @@ import categories_const
 from token import Token
 
 
-def tokenize(input_str, nbLineRuntime):
+def tokenize(input_str, nbLineRuntime=0):
     """
     :param input_str: Chaine entree
     :return: listes des tokens
