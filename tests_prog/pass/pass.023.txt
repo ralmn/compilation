@@ -1,1 +1,1 @@
-{int x;int y;x=2;y=x*x;out y;}
+{int x;int y;x=2;y=x*x;print(y);}
