@@ -29,12 +29,19 @@ def run(str, skip_print=False, out=sys.stdout):
 
 def runtime():
     return """
-        int print(int val){
-            # todo ici faire le decoupage de l'int pour faire les out x
-            
-            return 0;
-        }
+        int print(int a) {
+
+            if(a < 10) {
+                out a+48;
+                return;
+            }
         
+            int tmp;
+            tmp = a/10;
+            print(tmp);
+        
+            out a%10+48;
+        }
     """
 
 if __name__ == '__main__':

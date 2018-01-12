@@ -41,7 +41,7 @@ def genCodeBlock(genCode, node):
 
 def genCodeOut(genCode, node):
     node.children[0].gencode(genCode)
-    genCode.linesOut.append("out.i")
+    genCode.linesOut.append("out.c")
 
 
 def genCodeDrop(genCode, node):
