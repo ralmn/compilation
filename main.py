@@ -6,6 +6,8 @@ import lexical, syntax, gencode, optimisator, table_symbol, semantic
 
 def run(str, skip_print=False, out=sys.stdout):
 
+    str = runtime() + str
+
     tableSymbol = table_symbol.TableSymbol()
 
     lex = lexical.Lexical(str)
@@ -24,6 +26,16 @@ def run(str, skip_print=False, out=sys.stdout):
     if not skip_print:
         print(g.getOutput(), file=out)
 
+
+def runtime():
+    return """
+        int print(int val){
+            # todo ici faire le decoupage de l'int pour faire les out x
+            
+            return 0;
+        }
+        
+    """
 
 if __name__ == '__main__':
     try:

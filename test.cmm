@@ -1,8 +1,4 @@
 int main(){
-    int x;
-    x=1;
-    #if(1){
-        x=2; #
-        out x;
-    #}
+    print(20);
+
 }
