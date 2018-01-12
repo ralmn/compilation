@@ -2,9 +2,10 @@ import tokenizer
 
 
 class Lexical:
-    def __init__(self, input_str):
-        self.tokens = tokenizer.tokenize(input_str)
+    def __init__(self, input_str, nbLineRuntime):
+        self.tokens = tokenizer.tokenize(input_str, nbLineRuntime)
         self.index = 0
+        self.nbLineRuntime = nbLineRuntime
 
     def current(self):
         if self.index >= len(self.tokens):

@@ -2,13 +2,13 @@ import categories_const
 from token import Token
 
 
-def tokenize(input_str):
+def tokenize(input_str, nbLineRuntime):
     """
     :param input_str: Chaine entree
     :return: listes des tokens
     """
     charIndex = 0
-    line = 1
+    line = 1 - nbLineRuntime
     column = 1
 
     nbChar = len(input_str)

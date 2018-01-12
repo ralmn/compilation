@@ -6,11 +6,13 @@ import lexical, syntax, gencode, optimisator, table_symbol, semantic
 
 def run(str, skip_print=False, out=sys.stdout):
 
-    str += runtime()
+    nbLineRuntime = len(runtime().split('\n')) - 1
+
+    str = runtime() + str
 
     tableSymbol = table_symbol.TableSymbol()
 
-    lex = lexical.Lexical(str)
+    lex = lexical.Lexical(str, nbLineRuntime)
 
     syn = syntax.Syntax(lex)
     node = syn.node
