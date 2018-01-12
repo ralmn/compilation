@@ -66,6 +66,7 @@ TOKEN_VALUE = Category("value", "[0-9]+")
 
 TOKEN_OUT = Category("out", "out")
 
+TOKEN_COMMENT = Category("comment", "#")
 
 ALL_TOKENS = [
     TOKEN_IF,
@@ -105,7 +106,8 @@ ALL_TOKENS = [
     TOKEN_AFFECT,
     TOKEN_IDENT,
     TOKEN_VALUE,
-    TOKEN_OUT
+    TOKEN_OUT,
+    TOKEN_COMMENT
 ]
 
 TOKEN_MULTI_CHARS = [
@@ -113,7 +115,7 @@ TOKEN_MULTI_CHARS = [
     TOKEN_NOT, # -> !=
     TOKEN_LOWER_THAN, # -> <=
     TOKEN_GREATER_THAN, # -> >=
-    TOKEN_POINTER_ADRESS # -> &&
+    TOKEN_POINTER_ADRESS, # -> &&
 ]
 
 TOKEN_UNIQUE_MULTI_CHARS = ['|']

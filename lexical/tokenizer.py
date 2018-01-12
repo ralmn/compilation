@@ -74,6 +74,11 @@ def tokenize(input_str):
                             column += 2
                             continue
 
+                if category == categories_const.TOKEN_COMMENT:
+                    while charIndex < nbChar and ord(c) != 10:
+                        charIndex += 1
+                        c = input_str[charIndex]
+                    continue
 
 
                 tokens.append(Token(category, line, column) )
