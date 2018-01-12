@@ -26,8 +26,11 @@ class Semantic:
             symbol.slot = self.nextNbVar()
             node.slot = symbol.slot
 
+        #elif node.type == syntax.nodes_const.NODE_FUNC_CALL:
+
+
         elif node.type in [syntax.nodes_const.NODE_VAR_REF, syntax.nodes_const.NODE_AFFECTATION,
-                           syntax.nodes_const.NODE_INDIRECTION, syntax.nodes_const.NODE_INDEX]:
+                           syntax.nodes_const.NODE_INDIRECTION, syntax.nodes_const.NODE_INDEX, syntax.nodes_const.NODE_FUNC_CALL]:
             symbol = self.tableSymbol.getSymbol(node)  # TODO : Try except de gestion d'erreur
             node.slot = symbol.slot
             for child in node.children:

@@ -1,6 +1,7 @@
 int main(){
-    fnt(10)
+    fnts(10);
 }
 
-int fnt(int a) {
+int fnts(int a) {
+
 }

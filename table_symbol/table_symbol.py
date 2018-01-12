@@ -33,7 +33,7 @@ class TableSymbol:
 
         node_name = node.identifier
 
-        while index > 0:
+        while index >= 0:
             block = self.stack[index]
 
             if node_name in block:
