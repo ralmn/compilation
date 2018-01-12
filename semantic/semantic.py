@@ -1,5 +1,6 @@
 import syntax
 from syntax import nodes_const
+from compile_exception import CompileException
 
 class Semantic:
 
@@ -26,12 +27,12 @@ class Semantic:
             symbol.slot = self.nextNbVar()
             node.slot = symbol.slot
 
-        #elif node.type == syntax.nodes_const.NODE_FUNC_CALL:
-
-
         elif node.type in [syntax.nodes_const.NODE_VAR_REF, syntax.nodes_const.NODE_AFFECTATION,
                            syntax.nodes_const.NODE_INDIRECTION, syntax.nodes_const.NODE_INDEX, syntax.nodes_const.NODE_FUNC_CALL]:
-            symbol = self.tableSymbol.getSymbol(node)  # TODO : Try except de gestion d'erreur
+            try:
+                symbol = self.tableSymbol.getSymbol(node)
+            except:
+                raise CompileException("Using unknow reference", node.token)
             node.slot = symbol.slot
             for child in node.children:
                 self.semSymbol(child)
@@ -44,8 +45,7 @@ class Semantic:
         if node.type == nodes_const.NODE_LOOP:
             return
         if node.type == nodes_const.NODE_CONTINUE or node.type == nodes_const.NODE_BREAK:
-            # TODO : Faire une sementique exception
-            raise Exception("Sementique exception : %s not in loop" % node.type.name)
+            raise CompileException("Sementique exception : %s not in loop" % node.type.name, node.token)
 
         for c in node.children:
             self.semLoop(c)
@@ -71,8 +71,7 @@ class Semantic:
 
             return
 
-        # TODO : Faire une sementique exception
-        raise Exception("Sementique exception : need to define function ")
+        raise CompileException("Sementique exception : need to define function ", node.token)
 
 
 

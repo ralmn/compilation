@@ -1,4 +1,4 @@
-class CompileError(Exception):
+class CompileException(Exception):
 
     str = ""
 
@@ -12,10 +12,10 @@ class CompileError(Exception):
             for i in range(token.column - 1):
                 tmp_message += " "
             tmp_message += "^\r\n"
-        super(CompileError, self).__init__(tmp_message + message)
+        super(CompileException, self).__init__(tmp_message + message)
 
 
 
 def getLineError(line):
-    tmp_tab = CompileError.str.split("\n", line)
+    tmp_tab = CompileException.str.split("\n", line)
     return tmp_tab[len(tmp_tab)-2]

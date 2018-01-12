@@ -2,7 +2,7 @@ from __future__ import print_function
 
 import sys
 import lexical, syntax, gencode, optimisator, table_symbol, semantic
-from compile_error import CompileError
+from compile_exception import CompileException
 
 
 def run(str, skip_print=False, out=sys.stdout):
@@ -64,11 +64,11 @@ if __name__ == '__main__':
         else:
             str = ''.join(sys.stdin)
 
-        CompileError.str = str
+        CompileException.str = str
         run(str)
     except IOError as e:
         print("File error :", e, file=sys.stderr)
-    except CompileError as e:
+    except CompileException as e:
         print(e.message, file=sys.stderr)
 
 

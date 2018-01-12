@@ -1,6 +1,6 @@
 class Node:
 
-    def __init__(self, type, children=None, identifier=None, value=None, params=None):
+    def __init__(self, type, children=None, identifier=None, value=None, params=None, token=None):
         if children is None:
             children = []
         self.type = type
@@ -10,6 +10,7 @@ class Node:
         self.params = params
         self.nbLocal = 0
         self.slot = None
+        self.token = token
 
     def gencode(self, gCode):
         gencode = self.type.gencode
