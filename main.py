@@ -32,6 +32,12 @@ def run(str, skip_print=False, out=sys.stdout):
 def runtime():
     return """
         int print(int a) {
+        
+            if(a < 0) {
+                out 45;
+                print(-1 * a);
+                return;
+            }
 
             if(a < 10) {
                 out a+48;
