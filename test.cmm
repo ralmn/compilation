@@ -1,4 +1,6 @@
 int main(){
-    print(20);
+    fnt(10)
+}
 
+int fnt(int a) {
 }

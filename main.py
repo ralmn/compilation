@@ -6,7 +6,7 @@ import lexical, syntax, gencode, optimisator, table_symbol, semantic
 
 def run(str, skip_print=False, out=sys.stdout):
 
-    str = runtime() + str
+    str += runtime()
 
     tableSymbol = table_symbol.TableSymbol()
 
