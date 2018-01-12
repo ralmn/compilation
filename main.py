@@ -2,6 +2,7 @@ from __future__ import print_function
 
 import sys
 import lexical, syntax, gencode, optimisator, table_symbol, semantic
+from compile_error import CompileError
 
 
 def run(str, skip_print=False, out=sys.stdout):
@@ -52,18 +53,22 @@ def runtime():
         }
     """
 
+
 if __name__ == '__main__':
     try:
         if len(sys.argv) >= 2:
             file = open(sys.argv[1], 'r')
             lines = file.readlines()
 
-            run(''.join(lines))
+            str = ''.join(lines)
         else:
-            run(''.join(sys.stdin))
+            str = ''.join(sys.stdin)
+
+        CompileError.str = str
+        run(str)
     except IOError as e:
         print("File error :", e, file=sys.stderr)
-    except syntax.SyntaxError as e:
+    except CompileError as e:
         print(e.message, file=sys.stderr)
 
 
