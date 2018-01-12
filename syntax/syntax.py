@@ -3,7 +3,11 @@ from lexical import categories_const
 from node import Node
 import nodes_const
 from syntax_error import SyntaxError
-import pydot, os
+import os
+
+
+
+# import pydot
 
 
 # P = constant | ident ('[' E ']')? | identifiant '(' [ [E,]* E]?  ')' | ( E ) | - P | !P | * ident
@@ -816,35 +820,37 @@ class Syntax:
 
 
 
-
-
     def draw(self):
-        graph = pydot.Dot()
-        self.draw_node(graph, self.node)
-        graph.write_png("tree.png") # , prog="./dot/bin/dot"
-        #os.startfile(os.path.join(os.getcwd(), "tree.png"))
+        pass
 
 
-    @staticmethod
-    def draw_node(graph, node):
-        node_display = 'None'
-        if node is not None:
-            if node.type == nodes_const.NODE_CONSTANT:
-                node_display = node.value
-            elif node.type == nodes_const.NODE_PROGRAM:
-                node_display = "Start"
-            elif node.type == nodes_const.NODE_VAR_DECL:
-                node_display = "decl {}".format(node.identifier)
-            elif node.type == nodes_const.NODE_VAR_REF:
-                node_display = node.identifier
-            else:
-                node_display = node.type.name
+    #def draw(self):
+    #    graph = pydot.Dot()
+    #    self.draw_node(graph, self.node)
+    #    graph.write_png("tree.png") # , prog="./dot/bin/dot"
+    #    #os.startfile(os.path.join(os.getcwd(), "tree.png"))
 
-        pydot_node = pydot.Node("{}".format(hash(node)), label=node_display)
-        graph.add_node(pydot_node)
-        if node is None:
-            return pydot_node
-        for child in node.children:
-            pydot_child = Syntax.draw_node(graph, child)
-            graph.add_edge(pydot.Edge(pydot_node, pydot_child))
-        return pydot_node
+
+    # @staticmethod
+    # def draw_node(graph, node):
+    #     node_display = 'None'
+    #     if node is not None:
+    #         if node.type == nodes_const.NODE_CONSTANT:
+    #             node_display = node.value
+    #         elif node.type == nodes_const.NODE_PROGRAM:
+    #             node_display = "Start"
+    #         elif node.type == nodes_const.NODE_VAR_DECL:
+    #             node_display = "decl {}".format(node.identifier)
+    #         elif node.type == nodes_const.NODE_VAR_REF:
+    #             node_display = node.identifier
+    #         else:
+    #             node_display = node.type.name
+    #
+    #     pydot_node = pydot.Node("{}".format(hash(node)), label=node_display)
+    #     graph.add_node(pydot_node)
+    #     if node is None:
+    #         return pydot_node
+    #     for child in node.children:
+    #         pydot_child = Syntax.draw_node(graph, child)
+    #         graph.add_edge(pydot.Edge(pydot_node, pydot_child))
+    #     return pydot_node
