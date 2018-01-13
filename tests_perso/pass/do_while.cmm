@@ -1,0 +1,28 @@
+int main(){
+
+    int i;
+    i=0;
+    do {
+        println(i);
+        i=i+1;
+    } while(i < 2)
+
+    i=0;
+    do {
+        println(i);
+        i=i+1;
+    } while(!i)
+
+    int j;
+    j=2;
+    i=0;
+    do {
+        println(i);
+        i=i+1;
+    } while(i<j)
+
+    i=0;
+    do
+        println(i);
+    while(i>2);
+}

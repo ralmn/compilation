@@ -1,0 +1,15 @@
+int main(){
+
+    int i;
+    i=0;
+
+    println(1);
+    println(10);
+    println(-1);
+    println(10*2);
+    println(i);
+    println(!i);
+    println(i+1);
+    println(!(i+1));
+    println(!5);
+}
