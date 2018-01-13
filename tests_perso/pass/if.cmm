@@ -1,0 +1,45 @@
+int main(){
+
+    if(1){
+        println(1);
+    }
+    if(1){
+        println(2);
+    }else{
+        println(3);
+    }
+
+    if(0){
+        println(4);
+    }
+
+    if(0){
+        println(5);
+    }else{
+        println(6);
+    }
+
+    int a;
+    a = 0;
+
+    if(a){
+        println(7);
+    }
+    if(a){
+        println(8);
+    }else{
+        println(9);
+    }
+
+    if(!a){
+        println(10);
+    }
+    if(!a){
+        println(11);
+    }else{
+        println(12);
+    }
+
+
+
+}
