@@ -2,7 +2,7 @@ class CompileException(Exception):
 
     str = ""
 
-    def __init__(self, message, token=None):
+    def __init__(self, message, token=None, line=None):
 
         # Now for your custom code...
         tmp_message = ""
@@ -12,6 +12,10 @@ class CompileException(Exception):
             for i in range(token.column - 1):
                 tmp_message += " "
             tmp_message += "^\r\n"
+        else:
+            if line is not None:
+                tmp_message += "Error line " + str(line) + ": \r\n"
+                tmp_message += getLineError(line) + "\r\n"
         super(CompileException, self).__init__(tmp_message + message)
 
 
