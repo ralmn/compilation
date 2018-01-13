@@ -96,6 +96,8 @@ class Syntax:
                     if next_token.category == categories_const.TOKEN_PARENTHESIS_CLOSE:
                         self.size += 1
                         return Node(nodes_const.NODE_FUNC_CALL, identifier=token.identifier, children=list_param, token=token)
+                    if next_token.category == categories_const.TOKEN_COMMA:
+                        continue
 
                     next_node = self.E(next_token)
                     if next_node is None:
