@@ -42,6 +42,7 @@ def runtime():
 
             if(a < 10) {
                 out a+48;
+                out 10;
                 return;
             }
         
