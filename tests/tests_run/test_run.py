@@ -11,6 +11,7 @@ import signal
 
 import main
 import syntax
+from compile_exception import CompileException
 
 
 class TestRun(unittest.TestCase):
@@ -124,7 +125,7 @@ class TestRun(unittest.TestCase):
             print('\n'.join(lines))
             print("File error :", e, file=sys.stderr)
 
-        except syntax.SyntaxError as e:
+        except CompileException as e:
             print('\n'.join(lines))
             print(e.message, file=sys.stderr)
             raise e
