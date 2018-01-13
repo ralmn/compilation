@@ -42,15 +42,16 @@ def runtime():
 
             if(a < 10) {
                 out a+48;
-                out 10;
                 return;
             }
-        
-            int tmp;
-            tmp = a/10;
-            print(tmp);
+            print(a/10);
         
             out a%10+48;
+        }
+        
+        int println(int a) {
+            print(a);
+            out 10;
         }
     """
 
