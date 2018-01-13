@@ -1,5 +1,6 @@
 import categories_const
 from token import Token
+from compile_exception import CompileException
 
 
 def tokenize(input_str, nbLineRuntime=0):
@@ -94,6 +95,8 @@ def tokenize(input_str, nbLineRuntime=0):
                         charIndex += charOffset
                         column += charOffset
                         break
+            else:
+                raise CompileException("Tokenizer : You can't use this char : " + c, line=line)
 
         charIndex += 1
         column += 1
