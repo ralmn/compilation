@@ -2,6 +2,7 @@ import unittest
 
 import syntax
 import lexical
+from compile_exception import CompileException
 
 
 class TestSyntax(unittest.TestCase):
@@ -140,7 +141,7 @@ class TestSyntax(unittest.TestCase):
 
         self.assertEqual(10 + 6, len(lex))
 
-        with self.assertRaises(syntax.SyntaxError) as e:
+        with self.assertRaises(CompileException) as e:
             syntax.Syntax(lex)
         print(e.exception)
 
@@ -149,7 +150,7 @@ class TestSyntax(unittest.TestCase):
 
         self.assertEqual(10 + 6, len(lex))
 
-        with self.assertRaises(syntax.SyntaxError) as e:
+        with self.assertRaises(CompileException) as e:
             syntax.Syntax(lex)
         print(e.exception)
 
@@ -158,7 +159,7 @@ class TestSyntax(unittest.TestCase):
 
         self.assertEqual(10 + 6, len(lex))
 
-        with self.assertRaises(syntax.SyntaxError) as e:
+        with self.assertRaises(CompileException) as e:
             syntax.Syntax(lex)
         print(e.exception)
 
@@ -167,7 +168,7 @@ class TestSyntax(unittest.TestCase):
 
         self.assertEqual(10 + 6, len(lex))
 
-        with self.assertRaises(syntax.SyntaxError) as e:
+        with self.assertRaises(CompileException) as e:
             syntax.Syntax(lex)
         print(e.exception)
 
@@ -176,7 +177,7 @@ class TestSyntax(unittest.TestCase):
 
         self.assertEqual(10 + 6, len(lex))
 
-        with self.assertRaises(syntax.SyntaxError) as e:
+        with self.assertRaises(CompileException) as e:
             syntax.Syntax(lex)
         print(e.exception)
 
@@ -249,7 +250,7 @@ class TestSyntax(unittest.TestCase):
 
         self.assertEqual(11, len(lex))
 
-        with self.assertRaises(syntax.SyntaxError) as e:
+        with self.assertRaises(CompileException) as e:
             syntax.Syntax(lex)
         print(e.exception)
 
