@@ -1,0 +1,10 @@
+int min(int a, int){
+    if(a < b){
+        return a;
+    }
+    return b;
+}
+
+int main(){
+    min(1,2);
+}

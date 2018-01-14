@@ -1,0 +1,7 @@
+int fnt(int a){
+    return b
+}
+
+int main(){
+    fnt(1);
+}
