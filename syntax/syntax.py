@@ -79,6 +79,8 @@ class Syntax:
                     raise CompileException("Index read : Invalid expression", token=token)
 
                 next_token = self.lexical.nextToken()
+                if next_token is None:
+                    raise CompileException('Index read : Missing end of index', token=token)
                 if next_token.category != categories_const.TOKEN_SQUARE_BRACKET_CLOSE:
                     raise CompileException("Index read : Missing closing bracket", token=token)
 
@@ -114,6 +116,8 @@ class Syntax:
         if token.category == categories_const.TOKEN_PARENTHESIS_OPEN:
             node = self.E(self.lexical.nextToken())
             nxtToken = self.lexical.nextToken()
+            if nxtToken is None:
+                raise CompileException('Calling function not correct.', token=token)
             if nxtToken.category == categories_const.TOKEN_PARENTHESIS_CLOSE:
                 return node
 
@@ -363,6 +367,8 @@ class Syntax:
 
         if nodeA is not None:
             nextTokenAfterA = self.lexical.nextToken()
+            if nextTokenAfterA is None:
+                raise CompileException('Affectation  Missing semicolon.', token=token)
 
             if nextTokenAfterA.category == categories_const.TOKEN_SEMICOLON:
                 return nodeA
@@ -377,6 +383,8 @@ class Syntax:
 
         if nodeE is not None:
             nextTokenAfterE = self.lexical.nextToken()
+            if nextTokenAfterE is None:
+                raise CompileException('Expression : missing semicolon', token=token)
 
             if nextTokenAfterE.category == categories_const.TOKEN_SEMICOLON:
                 self.size += 1
@@ -400,6 +408,8 @@ class Syntax:
                 raise CompileException("Out: unexpected expression to print (%s)" % str(nextToken))
 
             nextTokenAfterE = self.lexical.nextToken()
+            if nextTokenAfterE is None:
+                raise CompileException('Out: Missing semicolon', token=token)
 
             if nextTokenAfterE.category == categories_const.TOKEN_SEMICOLON:
                 self.size += 1
@@ -445,6 +455,8 @@ class Syntax:
                 return Node(nodes_const.NODE_IF, [nodeCondition, nodeS1], token=token)
 
             nextToken = self.lexical.nextToken()
+            if nextToken is None:
+                raise CompileException('Else : Missing statement', token=token)
             nodeS2 = self.S(nextToken)
             if nodeS2 is None:
                 raise CompileException('Else : Missing statement', token=token)
@@ -507,11 +519,11 @@ class Syntax:
                 raise CompileException('DO-WHILE : invalid block', token=token)
 
             nextToken = self.lexical.nextToken()
-            if nextToken.category != categories_const.TOKEN_WHILE:
+            if nextToken is None or nextToken.category != categories_const.TOKEN_WHILE:
                 raise CompileException('DO-WHILE : Missing While', token=token)
 
             nextToken = self.lexical.nextToken()
-            if nextToken.category != categories_const.TOKEN_PARENTHESIS_OPEN:
+            if nextToken is None or nextToken.category != categories_const.TOKEN_PARENTHESIS_OPEN:
                 raise CompileException('DO-WHILE : Missing opening parenthesis for condition', token=token)
 
             # self.lexical.undo()
@@ -654,7 +666,7 @@ class Syntax:
                 children.append(nodeE)
                 nextToken = self.lexical.nextToken()
 
-            if nextToken.category != categories_const.TOKEN_SEMICOLON:
+            if nextToken is None or nextToken.category != categories_const.TOKEN_SEMICOLON:
                 raise CompileException("return: Missing semicolon", token=token)
 
             self.size += 1
@@ -680,11 +692,11 @@ class Syntax:
 
             nextTokenAfterIdent = self.lexical.nextToken()
 
-            if nextTokenAfterIdent.category == categories_const.TOKEN_SEMICOLON:
+            if nextTokenAfterIdent is None or nextTokenAfterIdent.category != categories_const.TOKEN_SEMICOLON:
+                raise CompileException('DECLARATION : Missing semicolon', token=token)
+            else:
                 self.size += 1
                 return Node(nodes_const.NODE_VAR_DECL, children=[], identifier=nextToken.identifier, token=token)
-            else:
-                raise CompileException('DECLARATION : Missing semicolon', token=token)
 
         # fin gestion declaration
 
@@ -695,10 +707,12 @@ class Syntax:
             tokenPtn = token
             tokenIdent = self.lexical.nextToken()
 
-            if tokenIdent.category != categories_const.TOKEN_IDENT:
+            if tokenIdent is None or tokenIdent.category != categories_const.TOKEN_IDENT:
                 raise CompileException("Pointeur : missing identifier", token=tokenPtn)
 
             nextToken = self.lexical.nextToken()
+            if nextToken is None:
+                raise CompileException("Pointeur : using *indent with nothing after", token=token)
 
             if nextToken.category == categories_const.TOKEN_SEMICOLON:
                 self.lexical.undo(tokenPtn)
@@ -722,6 +736,8 @@ class Syntax:
         tokenIden = token
 
         nextToken = self.lexical.nextToken()
+        if nextToken is None:
+            raise CompileException("Missing opening bracket", token=token)
 
         # if [ E ] -> index
 
@@ -729,6 +745,8 @@ class Syntax:
             #on doit etre en index
 
             nextToken = self.lexical.nextToken()
+            if nextToken is None:
+                raise CompileException("Index : Missing expression", token=token)
 
             nodeE = self.E(nextToken)
 
@@ -736,12 +754,12 @@ class Syntax:
                 raise CompileException("Index : Missing expression", token=token)
 
             nextToken = self.lexical.nextToken()
-            if nextToken.category != categories_const.TOKEN_SQUARE_BRACKET_CLOSE:
+            if nextToken is None or nextToken.category != categories_const.TOKEN_SQUARE_BRACKET_CLOSE:
                 raise CompileException("Index : Missing closing square bracket", token=token)
 
             nextToken = self.lexical.nextToken()
 
-            if nextToken.category != categories_const.TOKEN_AFFECT:
+            if nextToken is None or nextToken.category != categories_const.TOKEN_AFFECT:
                 raise CompileException("Index : Missing Affectation", token=token)
 
             tokenExpression = self.lexical.nextToken()
@@ -780,11 +798,11 @@ class Syntax:
             raise CompileException("Function : Missing int", token=token)
 
         nextTokenIdent = self.lexical.nextToken()
-        if nextTokenIdent.category != categories_const.TOKEN_IDENT:
+        if nextTokenIdent is None or nextTokenIdent.category != categories_const.TOKEN_IDENT:
             raise CompileException("Function : Missing function name", token=nextTokenIdent)
 
         nextToken = self.lexical.nextToken()
-        if nextToken.category != categories_const.TOKEN_PARENTHESIS_OPEN:
+        if nextToken is None or nextToken.category != categories_const.TOKEN_PARENTHESIS_OPEN:
             raise CompileException("Function : Missing opening parenthesis", token=nextToken)
 
         nextToken = self.lexical.nextToken()
@@ -793,11 +811,13 @@ class Syntax:
 
         while nextToken.category == categories_const.TOKEN_INT:
             nextToken = self.lexical.nextToken()
-            if nextToken.category != categories_const.TOKEN_IDENT:
+            if nextToken is None or nextToken.category != categories_const.TOKEN_IDENT:
                 raise CompileException("Function : Missing params name", token=nextToken)
             params.append(nextToken.identifier)
 
             nextToken = self.lexical.nextToken()
+            if nextToken is None:
+                raise CompileException("Function : parameter not finished", token=token)
             if nextToken.category != categories_const.TOKEN_COMMA:
                 #nextToken = self.lexical.nextToken()
                 break
@@ -805,10 +825,12 @@ class Syntax:
             nextToken = self.lexical.nextToken()
 
 
-        if nextToken.category != categories_const.TOKEN_PARENTHESIS_CLOSE:
+        if nextToken is None or nextToken.category != categories_const.TOKEN_PARENTHESIS_CLOSE:
             raise CompileException("Function : Missing closing parenthesis", token=nextToken)
 
         nextToken = self.lexical.nextToken()
+        if nextToken is None:
+            raise CompileException("Function : Missing function body", token=token)
 
         nodeS = self.S(nextToken)
         if nodeS is None:
